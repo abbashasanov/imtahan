@@ -1,0 +1,112 @@
+{% extends "panel/base.html" %}
+{% block title %}Tənzimləmə — {{ exam.title }}{% endblock %}
+{% block content %}
+<section class="hero-bar">
+  <div class="hero-ico">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H8a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V8c.3.6.9 1 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+  </div>
+  <div>
+    <h1>{{ exam.title }} — tənzimləmə</h1>
+    <p>Ümumi bal, vaxt, kimlərin baxa biləcəyi və onlayn imtahan qaydaları.</p>
+  </div>
+</section>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">1</span>
+      <div>
+        <h2>Bal hesablaması</h2>
+        <p class="help">Sualın öz balı yoxdursa bu ümumi bal götürülür</p>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div>
+        <label class="field-label" for="{{ form.grade.id_for_label }}">İmtahanın sinfi</label>
+        {{ form.grade }}{{ form.grade.errors }}
+      </div>
+      <div>
+        <label class="field-label" for="{{ form.default_points.id_for_label }}">Hər sual neçə bal</label>
+        {{ form.default_points }}{{ form.default_points.errors }}
+        <p class="help">Boş buraxılsa sualın qarşısında da bal yoxdursa xəbərdarlıq çıxar.</p>
+      </div>
+      <div>
+        <label class="field-label" for="{{ form.passing_score.id_for_label }}">Keçid balı (%)</label>
+        {{ form.passing_score }}{{ form.passing_score.errors }}
+      </div>
+    </div>
+  </section>
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">2</span>
+      <div>
+        <h2>Vaxt</h2>
+        <p class="help">Müddət qoyun və ya limitsiz buraxın</p>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div>
+        <label class="field-label" for="{{ form.duration_minutes.id_for_label }}">Müddət (dəqiqə)</label>
+        {{ form.duration_minutes }}{{ form.duration_minutes.errors }}
+      </div>
+      <div class="full">
+        <label>{{ form.unlimited_time }} {{ form.unlimited_time.label }}</label>
+      </div>
+    </div>
+  </section>
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">3</span>
+      <div>
+        <h2>Kim baxa bilər</h2>
+        <p class="help">İştirak üçün yenə qeydiyyat (telefon və rayon) tələb olunur</p>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="full">
+        <label class="field-label" for="{{ form.access_mode.id_for_label }}">Görünmə</label>
+        {{ form.access_mode }}{{ form.access_mode.errors }}
+      </div>
+    </div>
+  </section>
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">4</span>
+      <div>
+        <h2>Onlayn imtahan qaydaları</h2>
+        <p class="help">Qarışdırma, cəhd limiti və nəticənin göstərilməsi</p>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div>
+        <label class="field-label" for="{{ form.max_attempts.id_for_label }}">Cəhd sayı</label>
+        {{ form.max_attempts }}{{ form.max_attempts.errors }}
+      </div>
+      <div class="full">
+        <label>{{ form.shuffle_questions }} Sualların sırasını qarışdır</label>
+      </div>
+      <div class="full">
+        <label>{{ form.shuffle_choices }} Variantların sırasını qarışdır</label>
+      </div>
+      <div class="full">
+        <label>{{ form.show_score_immediately }} Təhvildən dərhal balı göstər</label>
+      </div>
+      <div class="full">
+        <label>{{ form.show_correct_answers }} Təhvildən sonra düzgün cavabları göstər</label>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-bar">
+    <button class="btn primary" type="submit">Tənzimləməni saxla</button>
+    <a class="btn" href="{% url 'panel_exam_detail' exam.pk %}">İmtahana qayıt</a>
+    <a class="btn" href="{% url 'panel_exams' %}">Siyahı</a>
+  </div>
+</form>
+{% endblock %}

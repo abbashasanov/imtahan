@@ -1,0 +1,91 @@
+<div class="sheet">
+  <header class="sheet-head">
+    <div>
+      <h1>İmtahan Nəticə Vərəqəsi</h1>
+      <p>{{ submission.exam.title }}{% if submission.exam.grade_display %} · {{ submission.exam.grade_display }}{% endif %}</p>
+    </div>
+    <span class="sheet-badge">{% firstof profile.grade_display submission.exam.grade_display "Sinif" %}</span>
+  </header>
+
+  <div class="sheet-meta">
+    <div class="sheet-field"><span>Ad</span><strong>{{ profile.first_name|default:submission.user.first_name|default:"—" }}</strong></div>
+    <div class="sheet-field"><span>Soyad</span><strong>{{ profile.last_name|default:submission.user.last_name|default:"—" }}</strong></div>
+    <div class="sheet-field"><span>İş nömrəsi</span><strong>{{ profile.code|default:"—" }}</strong></div>
+    <div class="sheet-field"><span>İmtahan tarixi</span><strong>{{ submission.submitted_at|date:"d.m.Y" }}</strong></div>
+    <div class="sheet-field"><span>Sinif</span><strong>{{ profile.grade_display|default:"—" }}</strong></div>
+    <div class="sheet-field"><span>Sıra</span><strong>{{ rank }}</strong></div>
+  </div>
+
+  {% if show_score %}
+    <div class="sheet-score">
+      <span>Ümumi bal</span>
+      <strong>{{ submission.earned_points }}</strong>
+    </div>
+  {% else %}
+    <p class="muted" style="text-align:center">Nəticə sonra elan olunacaq.</p>
+  {% endif %}
+
+  <div class="sheet-actions">
+    {% if certificate %}
+      <a class="btn" href="{% url 'certificate_pdf' certificate.pk %}">Sertifikatı yüklə</a>
+    {% endif %}
+    {% if staff_view %}
+      <a class="btn secondary" href="{% url 'panel_exam_participants' exam.pk %}">İştirakçılara qayıt</a>
+    {% else %}
+      <a class="btn secondary" href="{% url 'exam_list' %}">İmtahanlara qayıt</a>
+    {% endif %}
+  </div>
+
+  {% if show_score %}
+    <section class="sheet-block">
+      <h2>Fənn Nəticələri</h2>
+      <div class="table-wrap">
+        <table class="sheet-table">
+          <thead>
+            <tr>
+              <th>Fənn</th>
+              <th>Doğru</th>
+              <th>Səhv</th>
+              <th>Ümumi</th>
+              <th>Bal</th>
+              {% if show_answers %}
+                <th>Tələbə Cavabı</th>
+                <th>Doğru Cavablar</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in subjects %}
+              <tr>
+                <td>{{ row.name }}</td>
+                <td class="ok">{{ row.correct }}</td>
+                <td class="bad">{{ row.wrong }}</td>
+                <td>{{ row.total }}</td>
+                <td><strong>{{ row.earned }}</strong></td>
+                {% if show_answers %}
+                  <td class="keys student-key">{{ row.student_key }}</td>
+                  <td class="keys correct-key">{{ row.correct_key }}</td>
+                {% endif %}
+              </tr>
+            {% empty %}
+              <tr><td colspan="7">Fənn nəticəsi yoxdur.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="sheet-block">
+      <h2>Statistika</h2>
+      <div class="sheet-stats">
+        {% for row in subjects %}
+          <article>
+            <h3>{{ row.name }}</h3>
+            <p>{{ row.earned }}</p>
+            <small>Ümumi {{ row.total }}</small>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+</div>

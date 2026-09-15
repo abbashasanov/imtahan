@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}İmtahan platforması{% endblock %}</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{% url 'exam_list' %}">Onlayn sınaq imtahanı</a>
+    <nav class="nav">
+      {% if user.is_authenticated %}
+        <span>{{ user.get_username }}</span>
+        {% if user.is_staff %}
+          <a href="{% url 'panel_dashboard' %}">İdarə paneli</a>
+        {% endif %}
+        <form method="post" action="{% url 'logout' %}" style="display:inline">
+          {% csrf_token %}
+          <button class="btn ghost" type="submit">Çıxış</button>
+        </form>
+      {% else %}
+        <a href="{% url 'register' %}">Qeydiyyat</a>
+        <a class="btn" href="{% url 'login' %}">Giriş</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main class="wrap">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">PDF-dən avtomatik sual idxalı ilə sınaq imtahanı platforması</footer>
+</body>
+</html>

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}İmtahanlar{% endblock %}
+{% block content %}
+<section class="hero card">
+  <h1>Aktiv sınaq imtahanları</h1>
+  <p class="muted">Yalnız açılma və bağlanma tarixləri arasında olan imtahanlara başlaya bilərsiniz.</p>
+</section>
+
+<section class="exam-grid" style="margin-top:18px">
+  {% for exam in exams %}
+    <article class="exam-item">
+      <div>
+        <h2 style="margin:0 0 6px">{{ exam.title }}</h2>
+        <p class="muted" style="margin:0">
+          {{ exam.question_count }} sual
+          ·
+          {% if exam.has_time_limit %}{{ exam.duration_minutes }} dəqiqə{% else %}Vaxt limiti yoxdur{% endif %}
+        </p>
+        <p class="muted">
+          {% if exam.opens_at %}Açılır: {{ exam.opens_at|date:"d.m.Y H:i" }}{% else %}İndi açıqdır{% endif %}
+          ·
+          {% if exam.closes_at %}Bağlanır: {{ exam.closes_at|date:"d.m.Y H:i" }}{% else %}Bağlanma yoxdur{% endif %}
+        </p>
+        {% if exam.description %}<p>{{ exam.description }}</p>{% endif %}
+      </div>
+      <div>
+        {% if exam.user_submission and exam.completed_attempts >= exam.max_attempts %}
+          <a class="btn secondary" href="{% url 'exam_result' exam.user_submission.pk %}">Nəticəyə bax</a>
+        {% elif exam.is_available %}
+          <a class="btn" href="{% url 'take_exam' exam.pk %}">{% if user.is_authenticated %}İmtahana başla{% else %}Daxil olub başla{% endif %}</a>
+        {% else %}
+          <span class="muted">{{ exam.availability_label }}</span>
+        {% endif %}
+      </div>
+    </article>
+  {% empty %}
+    <div class="card">Hazırda aktiv imtahan yoxdur.</div>
+  {% endfor %}
+</section>
+{% endblock %}

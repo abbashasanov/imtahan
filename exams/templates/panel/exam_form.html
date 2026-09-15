@@ -1,0 +1,257 @@
+{% extends "panel/base.html" %}
+{% block title %}{% if mode == "create" %}PDF idxalı{% else %}{{ exam.title }}{% endif %}{% endblock %}
+{% block content %}
+<section class="hero-bar">
+  <div class="hero-ico">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+  </div>
+  <div>
+    <h1>{% if mode == "create" %}PDF idxalı{% else %}{{ exam.title }}{% endif %}
+      {% if exam %}
+        <a class="btn" href="{% url 'panel_exam_settings' exam.pk %}" style="margin-left:10px;vertical-align:middle">Tənzimləmə</a>
+      {% endif %}
+    </h1>
+    <p>Suallar PDF-dən parse olunur. Açılma və bağlanma tarixlərini buradan qurun.</p>
+  </div>
+</section>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">1</span>
+      <div>
+        <h2>İmtahan məlumatı</h2>
+        <p class="help">Ad, sinif, müddət və keçid balı</p>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="full">
+        <label class="field-label" for="{{ form.title.id_for_label }}">İmtahanın adı</label>
+        {{ form.title }}{{ form.title.errors }}
+      </div>
+      <div class="full">
+        <label class="field-label" for="{{ form.description.id_for_label }}">Təsvir</label>
+        {{ form.description }}
+      </div>
+      <div>
+        <label class="field-label" for="{{ form.grade.id_for_label }}">Sinif</label>
+        {{ form.grade }}{{ form.grade.errors }}
+      </div>
+      <div>
+        <label class="field-label" for="{{ form.duration_minutes.id_for_label }}">Müddət (dəqiqə)</label>
+        {{ form.duration_minutes }}
+      </div>
+      <div>
+        <label class="field-label" for="{{ form.passing_score.id_for_label }}">Keçid balı (%)</label>
+        {{ form.passing_score }}
+      </div>
+      <div class="full">
+        <label>{{ form.is_active }} Aktivdir — tələbələrə görünsün</label>
+      </div>
+    </div>
+  </section>
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">2</span>
+      <div>
+        <h2>Açılma və bağlanma</h2>
+        <p class="help">Boş qalsa imtahan dərhal açılır və limitsiz qalır</p>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div>
+        <label class="field-label" for="{{ form.opens_at.id_for_label }}">Açılma tarixi</label>
+        {{ form.opens_at }}{{ form.opens_at.errors }}
+      </div>
+      <div>
+        <label class="field-label" for="{{ form.closes_at.id_for_label }}">Bağlanma tarixi</label>
+        {{ form.closes_at }}{{ form.closes_at.errors }}
+      </div>
+    </div>
+  </section>
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">3</span>
+      <div>
+        <h2>PDF-dən idxal</h2>
+        <p class="help">Hər sual 1. / Sual 1: formatında, variantlar A) B) C) D) E)</p>
+      </div>
+    </div>
+    {{ form.pdf_file }}{{ form.pdf_file.errors }}
+    {% if mode == "edit" %}
+      <p style="margin-top:10px">{{ form.parse_pdf }} {{ form.parse_pdf.label }}</p>
+    {% endif %}
+  </section>
+
+  <div class="footer-bar">
+    <button class="btn" type="submit">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v13a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+      Saxla
+    </button>
+    <div class="radio-row">
+      <label><input type="radio" name="import_mode" value="replace" {% if mode == "create" %}checked{% endif %}> Sıfırdan qur</label>
+      <label><input type="radio" name="import_mode" value="keep" {% if mode == "edit" %}checked{% endif %}> Köhnəni saxla</label>
+    </div>
+    {% if exam %}
+      <a class="btn danger" href="{% url 'panel_exam_delete' exam.pk %}">Sil</a>
+    {% endif %}
+  </div>
+</form>
+
+{% if exam %}
+  <section class="step-card" id="suallar" style="margin-top:16px">
+    <div class="step-head">
+      <span class="step-num">4</span>
+      <div>
+        <h2>İdxal olunmuş suallar</h2>
+        <p class="help">{{ questions|length }} sual · düzgün cavabı hər sual üçün seçib saxlayın · ümumi bal: {% if exam.default_points %}{{ exam.default_points }}{% else %}təyin olunmayıb{% endif %}</p>
+      </div>
+    </div>
+    <form method="post" action="{% url 'panel_question_create' exam.pk %}" style="margin:0 0 12px">
+      {% csrf_token %}
+      <button class="btn primary" type="submit">Yeni sual</button>
+    </form>
+    <form method="post" action="{% url 'panel_exam_marking' exam.pk %}">
+      {% csrf_token %}
+      {% if marked_questions %}
+      <div class="marking-row" style="margin-bottom:14px;flex-wrap:wrap">
+        <label>
+          Suallar
+          <input class="field-input" type="number" min="1" name="range_from" placeholder="1" style="width:80px">
+        </label>
+        <label>
+          — 
+          <input class="field-input" type="number" min="1" name="range_to" placeholder="30" style="width:80px">
+        </label>
+        <label>
+          Fənn
+          <select name="bulk_subject" class="field-input">
+            <option value="">— fənn seçin —</option>
+            {% for subject in subjects %}
+              <option value="{{ subject.pk }}">{{ subject.name }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <button class="btn" type="submit" name="action" value="bulk_range">Aralığa təyin et</button>
+        <button class="btn" type="submit" name="action" value="bulk_selected">Seçilənlərə təyin et</button>
+      </div>
+      {% endif %}
+      {% for item in marked_questions %}
+        {% with question=item.question %}
+      <article class="q-preview">
+        <div class="q-preview-head">
+          <label style="display:flex;gap:8px;align-items:center">
+            <input type="checkbox" name="selected" value="{{ question.pk }}">
+            <h3 style="margin:0">{{ question.number }}. {{ question.text }}</h3>
+          </label>
+          <a class="btn" href="{% url 'panel_question_edit' exam.pk question.pk %}">Redaktə</a>
+        </div>
+        {% if item.warnings %}
+          <ul class="warn-list">
+            {% for warning in item.warnings %}
+              <li>{{ warning }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        {% if question.image %}
+          <p><img src="{{ question.image.url }}" alt="Sual {{ question.number }}" style="max-width:100%;border-radius:10px;border:1px solid #e2e8f0"></p>
+        {% endif %}
+        <div class="marking-row">
+          <label>
+            Düzgün cavab
+            <select name="correct_{{ question.pk }}" class="field-input">
+              <option value="">— seçin —</option>
+              {% for choice in question.choices.all %}
+                <option value="{{ choice.letter }}" {% if item.correct == choice.letter %}selected{% endif %}>{{ choice.letter }}{% if choice.text %} — {{ choice.text|truncatechars:40 }}{% endif %}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <label>
+            Bu sualın balı
+            <input class="field-input" type="number" min="0" name="points_{{ question.pk }}" value="{% if question.points != None %}{{ question.points }}{% endif %}" placeholder="{% if exam.default_points != None %}ümumi: {{ exam.default_points }}{% else %}bal yoxdur{% endif %}">
+          </label>
+          <label>
+            Fənn
+            <select name="subject_{{ question.pk }}" class="field-input">
+              <option value="">— seçin —</option>
+              {% for subject in subjects %}
+                <option value="{{ subject.pk }}" {% if question.subject_id == subject.pk %}selected{% endif %}>{{ subject.name }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <span class="muted">Hesablamada: {% if item.effective_points != None %}{{ item.effective_points }} bal{% else %}—{% endif %}</span>
+        </div>
+        <ul class="q-choices">
+          {% for choice in question.choices.all %}
+            <li class="{% if choice.is_correct %}is-correct{% endif %}">
+              <strong>{{ choice.letter }})</strong> {{ choice.text }}
+              {% if choice.image %}
+                <img src="{{ choice.image.url }}" alt="{{ choice.letter }}" style="max-width:180px;display:block;margin-top:6px">
+              {% endif %}
+              {% if choice.is_correct %}<span class="badge pass">düzgün</span>{% endif %}
+            </li>
+          {% empty %}
+            <li class="muted">Variant tapılmadı.</li>
+          {% endfor %}
+        </ul>
+      </article>
+        {% endwith %}
+      {% empty %}
+      <p class="muted">Hələ sual yoxdur. PDF yükləyib Saxla düyməsini basın.</p>
+      {% endfor %}
+      {% if marked_questions %}
+        <div class="footer-bar" style="margin-top:12px">
+          <button class="btn primary" type="submit" name="action" value="save">Cavabları, balları və fənləri saxla</button>
+        </div>
+      {% endif %}
+    </form>
+  </section>
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">5</span>
+      <div>
+        <h2>Bu imtahanın nəticələri</h2>
+        <p class="help">{{ exam.question_count }} sual{% if exam.grade_display %} · {{ exam.grade_display }}{% endif %} · {{ exam.availability_label }}</p>
+      </div>
+    </div>
+    <div class="footer-bar" style="margin-bottom:12px">
+      <a class="btn primary" href="{% url 'panel_exam_participants' exam.pk %}">İştirakçılar, sıralama və cavab vərəqələri</a>
+    </div>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Tələbə</th><th>Əlaqə</th><th>Ərazi</th><th>Bal</th><th>Tarix</th><th>Sertifikat</th></tr></thead>
+        <tbody>
+          {% for item in results %}
+            <tr>
+              <td><a href="{% url 'panel_exam_submission' exam.pk item.pk %}">{% firstof item.user.profile.full_name item.user.get_username %}</a></td>
+              <td>{{ item.user.profile.phone|default:"—" }}</td>
+              <td>{{ item.user.profile.area_label|default:"—" }}</td>
+              <td>{{ item.earned_points }}</td>
+              <td>{{ item.submitted_at|date:"d.m.Y H:i" }}</td>
+              <td>
+                {% if item.passed %}
+                  {% if item.certificate %}
+                    <a href="{% url 'panel_certificate_view' item.certificate.pk %}">{{ item.certificate.code }}</a>
+                  {% else %}
+                    <a href="{% url 'panel_certificate_issue' item.pk %}">Sertifikat ver</a>
+                  {% endif %}
+                {% else %}
+                  <span class="badge fail">Keçmədi</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6" class="muted">Nəticə yoxdur.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "panel/base.html" %}
+{% block title %}İmtahanlar{% endblock %}
+{% block content %}
+<section class="hero-bar">
+  <div class="hero-ico">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
+  </div>
+  <div>
+    <h1>İmtahanlar</h1>
+    <p>PDF idxalı → tarixlər → nəticələr. Bir paneldə hər şey.</p>
+  </div>
+</section>
+
+<form class="toolbar" method="get">
+  <a class="icon-btn" href="?date={{ prev_date }}" aria-label="Əvvəlki gün">‹</a>
+  <label class="date-field">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#64748b" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>
+    <input type="date" name="date" value="{{ selected_date }}">
+  </label>
+  <a class="icon-btn" href="?date={{ next_date }}" aria-label="Növbəti gün">›</a>
+  <button class="btn-bax" type="submit">Bax</button>
+  <a class="btn primary" href="{% url 'panel_exam_create' %}">Yeni imtahan yarat</a>
+</form>
+
+<section class="stat-grid">
+  <article class="stat-card"><div class="label">İmtahanlar</div><div class="value">{{ exam_count }}</div></article>
+  <article class="stat-card"><div class="label">Hazırda açıq</div><div class="value">{{ open_count }}</div></article>
+  <article class="stat-card"><div class="label">Nəticələr</div><div class="value">{{ result_count }}</div></article>
+  <article class="stat-card"><div class="label">Sertifikatlar</div><div class="value">{{ certificate_count }}</div></article>
+</section>
+
+<section class="step-card">
+  <div class="step-head">
+    <span class="step-num">1</span>
+    <div>
+      <h2>Bu günün imtahanları</h2>
+      <p class="help">Seçilmiş tarixdə açıq olan və ya tarixi olmayan imtahanlar</p>
+    </div>
+  </div>
+  <div class="chips">
+    {% for exam in day_exams %}
+      <a class="chip" href="{% url 'panel_exam_detail' exam.pk %}">{{ exam.title }} ×</a>
+    {% empty %}
+      <span class="muted">Bu tarix üçün imtahan yoxdur.</span>
+    {% endfor %}
+  </div>
+</section>
+
+<div class="two-col">
+  <section class="panel-card">
+    <h2>Son nəticələr</h2>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Tələbə</th><th>İmtahan</th><th>Bal</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for item in recent_results %}
+            <tr>
+              <td>{{ item.user.get_username }}</td>
+              <td>{{ item.exam.title }}</td>
+              <td>{{ item.score }}%</td>
+              <td>
+                {% if item.passed %}<span class="badge pass">Keçdi</span>{% else %}<span class="badge fail">Keçmədi</span>{% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="4" class="muted">Hələ nəticə yoxdur.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="panel-card">
+    <h2>Tezliklə açılacaq</h2>
+    {% for exam in upcoming %}
+      <p><strong>{{ exam.title }}</strong><br><span class="muted">{{ exam.opens_at|date:"d.m.Y H:i" }}</span></p>
+    {% empty %}
+      <p class="muted">Planlaşdırılmış imtahan yoxdur.</p>
+    {% endfor %}
+    <p class="muted">Orta bal: {{ avg_score|floatformat:1 }}%</p>
+  </section>
+</div>
+{% endblock %}

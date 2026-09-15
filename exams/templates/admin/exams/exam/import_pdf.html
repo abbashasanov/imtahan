@@ -1,0 +1,16 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<div id="content-main">
+  <p>PDF faylını yükləyin. Suallar avtomatik parse olunub bazaya yazılacaq. Düzgün cavabları sonra imtahan səhifəsindən təyin edin.</p>
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="submit-row">
+      <input type="submit" class="default" value="İdxal et">
+      <a href="{% url 'admin:exams_exam_changelist' %}" class="button cancel-link">Ləğv et</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

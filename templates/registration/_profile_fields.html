@@ -1,0 +1,60 @@
+{% if include_account %}
+  <div class="form-row">
+    <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+    {{ form.username }}{{ form.username.errors }}
+  </div>
+{% endif %}
+<div class="form-row">
+  <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+  {{ form.first_name }}{{ form.first_name.errors }}
+</div>
+<div class="form-row">
+  <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+  {{ form.last_name }}{{ form.last_name.errors }}
+</div>
+<div class="form-row">
+  <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+  {{ form.phone }}{{ form.phone.errors }}
+</div>
+<div class="form-row">
+  <label for="{{ form.grade.id_for_label }}">{{ form.grade.label }}</label>
+  {{ form.grade }}{{ form.grade.errors }}
+</div>
+<div class="form-row">
+  <label for="{{ form.region.id_for_label }}">{{ form.region.label }}</label>
+  {{ form.region }}{{ form.region.errors }}
+</div>
+<div class="form-row" id="baku-row">
+  <label for="{{ form.baku_district.id_for_label }}">{{ form.baku_district.label }}</label>
+  {{ form.baku_district }}{{ form.baku_district.errors }}
+</div>
+<div class="form-row" id="address-row">
+  <label for="{{ form.address.id_for_label }}">{{ form.address.label }}</label>
+  {{ form.address }}{{ form.address.errors }}
+</div>
+{% if include_account %}
+  <div class="form-row">
+    <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+    {{ form.password1 }}{{ form.password1.errors }}
+  </div>
+  <div class="form-row">
+    <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+    {{ form.password2 }}{{ form.password2.errors }}
+  </div>
+{% endif %}
+<script>
+(function () {
+  const region = document.getElementById("{{ form.region.id_for_label }}");
+  const baku = document.getElementById("baku-row");
+  const address = document.getElementById("address-row");
+  if (!region || !baku || !address) return;
+  function sync() {
+    const value = region.value;
+    const isBaku = value === "Bakı";
+    baku.style.display = isBaku ? "" : "none";
+    address.style.display = value && !isBaku ? "" : "none";
+  }
+  region.addEventListener("change", sync);
+  sync();
+})();
+</script>

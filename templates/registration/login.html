@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Giriş{% endblock %}
+{% block content %}
+<section class="card" style="max-width:420px;margin:40px auto">
+  <h1>Giriş</h1>
+  <p class="muted">İmtahana başlamazdan əvvəl hesabınıza daxil olun.</p>
+  <form method="post">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <ul class="messages"><li>{{ form.non_field_errors }}</li></ul>
+    {% endif %}
+    <div class="form-row">
+      <label for="id_username">İstifadəçi adı</label>
+      {{ form.username }}
+    </div>
+    <div class="form-row">
+      <label for="id_password">Şifrə</label>
+      {{ form.password }}
+    </div>
+    <button class="btn" type="submit">Daxil ol</button>
+  </form>
+  <p class="muted" style="margin-top:16px">Hesabınız yoxdur? <a href="{% url 'register' %}">Qeydiyyatdan keçin</a></p>
+</section>
+{% endblock %}

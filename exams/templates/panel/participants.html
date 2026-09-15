@@ -1,0 +1,148 @@
+{% extends "panel/base.html" %}
+{% block title %}İştirakçılar — {{ exam.title }}{% endblock %}
+{% block content %}
+<section class="hero-bar">
+  <div class="hero-ico">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="3"/></svg>
+  </div>
+  <div>
+    <h1>{{ exam.title }}</h1>
+    <p>İştirakçılar, sıralama və əlaqə siyahısı. Şagirdin üzərinə vuranda cavab vərəqəsi açılır.</p>
+  </div>
+</section>
+
+<div class="footer-bar" style="margin-bottom:14px">
+  <a class="btn {% if view == 'list' %}primary{% endif %}" href="?view=list{% if selected_grade %}&grade={{ selected_grade }}{% endif %}{% if selected_region %}&region={{ selected_region|urlencode }}{% endif %}">İştirakçılar</a>
+  <a class="btn {% if view == 'rank' %}primary{% endif %}" href="?view=rank{% if selected_grade %}&grade={{ selected_grade }}{% endif %}{% if selected_region %}&region={{ selected_region|urlencode }}{% endif %}">Sıralama</a>
+  <a class="btn {% if view == 'contact' %}primary{% endif %}" href="?view=contact{% if selected_grade %}&grade={{ selected_grade }}{% endif %}{% if selected_region %}&region={{ selected_region|urlencode }}{% endif %}">Əlaqə siyahısı</a>
+  <a class="btn {% if view == 'groups' %}primary{% endif %}" href="?view=groups{% if selected_grade %}&grade={{ selected_grade }}{% endif %}{% if selected_region %}&region={{ selected_region|urlencode }}{% endif %}">Sinif və ərazi</a>
+  <a class="btn" href="{% url 'panel_exam_detail' exam.pk %}">İmtahana qayıt</a>
+</div>
+
+<section class="panel-card">
+  <form method="get" class="toolbar">
+    <input type="hidden" name="view" value="{{ view }}">
+    <select name="grade">
+      <option value="">Bütün siniflər</option>
+      {% for value, label in grade_choices %}
+        <option value="{{ value }}" {% if selected_grade == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <select name="region">
+      <option value="">Bütün ərazilər</option>
+      {% for value, label in area_choices %}
+        <option value="{{ value }}" {% if selected_region == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn-bax" type="submit">Filter</button>
+  </form>
+
+  {% if view == "groups" %}
+    <h2>Siniflər üzrə</h2>
+    {% for group in grade_groups %}
+      <h3>{{ group.label }} · {{ group.items|length }} nəfər</h3>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Sıra</th><th>Ad Soyad</th><th>Telefon</th><th>Ərazi</th><th>Bal</th></tr></thead>
+          <tbody>
+            {% for item in group.items %}
+              <tr>
+                <td>{{ item.rank }}</td>
+                <td><a href="{% url 'panel_exam_submission' exam.pk item.pk %}">{% firstof item.user.profile.full_name item.user.get_username %}</a></td>
+                <td>{{ item.user.profile.phone|default:"—" }}</td>
+                <td>{{ item.user.profile.area_label|default:"—" }}</td>
+                <td>{{ item.earned_points }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% empty %}
+      <p class="muted">İştirakçı yoxdur.</p>
+    {% endfor %}
+
+    <h2>Ərazi üzrə</h2>
+    {% for group in area_groups %}
+      <h3>{{ group.label }} · {{ group.items|length }} nəfər</h3>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Sıra</th><th>Ad Soyad</th><th>Telefon</th><th>Sinif</th><th>Bal</th></tr></thead>
+          <tbody>
+            {% for item in group.items %}
+              <tr>
+                <td>{{ item.rank }}</td>
+                <td><a href="{% url 'panel_exam_submission' exam.pk item.pk %}">{% firstof item.user.profile.full_name item.user.get_username %}</a></td>
+                <td>{{ item.user.profile.phone|default:"—" }}</td>
+                <td>{{ item.user.profile.grade_display|default:"—" }}</td>
+                <td>{{ item.earned_points }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% empty %}
+      <p class="muted">İştirakçı yoxdur.</p>
+    {% endfor %}
+
+  {% elif view == "rank" %}
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Sıra</th><th>Ad Soyad</th><th>Sinif</th><th>Bal</th></tr></thead>
+        <tbody>
+          {% for item in participants %}
+            <tr>
+              <td>{{ item.rank }}</td>
+              <td><a href="{% url 'panel_exam_submission' exam.pk item.pk %}">{% firstof item.user.profile.full_name item.user.get_username %}</a></td>
+              <td>{{ item.user.profile.grade_display|default:"—" }}</td>
+              <td>{{ item.earned_points }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="4" class="muted">İştirakçı yoxdur.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  {% elif view == "contact" %}
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Ad</th><th>Soyad</th><th>Telefon</th><th>Sinif</th><th>Ərazi</th></tr></thead>
+        <tbody>
+          {% for item in participants %}
+            <tr>
+              <td>{{ item.user.profile.first_name|default:"—" }}</td>
+              <td>{{ item.user.profile.last_name|default:"—" }}</td>
+              <td>{{ item.user.profile.phone|default:"—" }}</td>
+              <td>{{ item.user.profile.grade_display|default:"—" }}</td>
+              <td>{{ item.user.profile.area_label|default:"—" }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5" class="muted">İştirakçı yoxdur.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  {% else %}
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Sıra</th><th>Ad Soyad</th><th>Telefon</th><th>Sinif</th><th>Ərazi</th><th>Bal</th></tr></thead>
+        <tbody>
+          {% for item in participants %}
+            <tr>
+              <td>{{ item.rank }}</td>
+              <td><a href="{% url 'panel_exam_submission' exam.pk item.pk %}">{% firstof item.user.profile.full_name item.user.get_username %}</a></td>
+              <td>{{ item.user.profile.phone|default:"—" }}</td>
+              <td>{{ item.user.profile.grade_display|default:"—" }}</td>
+              <td>{{ item.user.profile.area_label|default:"—" }}</td>
+              <td>{{ item.earned_points }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6" class="muted">İştirakçı yoxdur.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends "panel/base.html" %}
+{% load static %}
+{% block title %}Cavab vərəqəsi — {{ profile.full_name|default:submission.user }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/sheet.css' %}">{% endblock %}
+{% block content %}
+{% include "exams/_answer_sheet.html" %}
+{% endblock %}

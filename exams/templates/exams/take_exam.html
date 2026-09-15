@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}{{ exam.title }}{% endblock %}
+{% block content %}
+{% if exam.has_time_limit %}
+<div class="timer" data-duration="{{ exam.duration_minutes }}" data-started="{{ submission.started_at|date:'c' }}">
+  <strong>{{ exam.title }}</strong>
+  <span>Qalan vaxt: <span id="countdown">{{ exam.duration_minutes }}:00</span></span>
+</div>
+{% else %}
+<div class="timer">
+  <strong>{{ exam.title }}</strong>
+  <span>Vaxt limiti yoxdur</span>
+</div>
+{% endif %}
+
+<form class="card" method="post" id="exam-form">
+  {% csrf_token %}
+  <p class="muted">{{ questions|length }} sual. Hər sual üçün bir variant seçin.</p>
+
+  {% for question in questions %}
+    <article class="question">
+      <h2>{{ question.number }}. {{ question.text }}</h2>
+      {% if question.image %}
+        <p><img src="{{ question.image.url }}" alt="Sual şəkli" style="max-width:100%"></p>
+      {% endif %}
+      <div class="choices">
+        {% for choice in question.display_choices %}
+          <label class="choice">
+            <input type="radio" name="q_{{ question.pk }}" value="{{ choice.pk }}">
+            <span><strong>{{ choice.letter }})</strong> {{ choice.text }}</span>
+            {% if choice.image %}
+              <img src="{{ choice.image.url }}" alt="{{ choice.letter }}" style="max-width:220px">
+            {% endif %}
+          </label>
+        {% endfor %}
+      </div>
+    </article>
+  {% empty %}
+    <p>Bu imtahanda hələ sual yoxdur.</p>
+  {% endfor %}
+
+  {% if questions %}
+    <button class="btn" type="submit">İmtahanı təhvil ver</button>
+  {% endif %}
+</form>
+
+{% if exam.has_time_limit %}
+<script>
+  (function () {
+    const box = document.querySelector(".timer");
+    const form = document.getElementById("exam-form");
+    if (!box || !form) return;
+    const minutes = Number(box.dataset.duration || 0);
+    if (!minutes) return;
+    const started = new Date(box.dataset.started);
+    const end = new Date(started.getTime() + minutes * 60 * 1000);
+    const label = document.getElementById("countdown");
+
+    function tick() {
+      const left = end - new Date();
+      if (left <= 0) {
+        label.textContent = "0:00";
+        form.submit();
+        return;
+      }
+      const totalSeconds = Math.floor(left / 1000);
+      const mm = Math.floor(totalSeconds / 60);
+      const ss = String(totalSeconds % 60).padStart(2, "0");
+      label.textContent = mm + ":" + ss;
+      requestAnimationFrame(() => setTimeout(tick, 250));
+    }
+    tick();
+  })();
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Profil məlumatı{% endblock %}
+{% block content %}
+<section class="card" style="max-width:520px;margin:40px auto">
+  <h1>Əlaqə məlumatı</h1>
+  <p class="muted">İmtahana başlamazdan əvvəl ad, soyad, sinif və yaşadığınız yeri qeyd edin.</p>
+  <form method="post">
+    {% csrf_token %}
+    {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+    {% if form.non_field_errors %}
+      <ul class="messages"><li>{{ form.non_field_errors }}</li></ul>
+    {% endif %}
+    {% include "registration/_profile_fields.html" with include_account=False %}
+    <button class="btn" type="submit">Yadda saxla və davam et</button>
+  </form>
+</section>
+{% endblock %}

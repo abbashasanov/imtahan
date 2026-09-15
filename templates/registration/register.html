@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Qeydiyyat{% endblock %}
+{% block content %}
+<section class="card" style="max-width:520px;margin:40px auto">
+  <h1>Qeydiyyat</h1>
+  <p class="muted">Ad, soyad, sinif, əlaqə nömrəsi və yaşadığınız yer imtahan üçün lazımdır.</p>
+  <form method="post">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <ul class="messages"><li>{{ form.non_field_errors }}</li></ul>
+    {% endif %}
+    {% include "registration/_profile_fields.html" with include_account=True %}
+    <button class="btn" type="submit">Qeydiyyatdan keç</button>
+  </form>
+  <p class="muted" style="margin-top:16px">Artıq hesabınız var? <a href="{% url 'login' %}">Daxil olun</a></p>
+</section>
+{% endblock %}

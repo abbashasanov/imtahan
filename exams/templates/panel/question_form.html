@@ -1,0 +1,91 @@
+{% extends "panel/base.html" %}
+{% block title %}Sual {{ question.number }} — {{ exam.title }}{% endblock %}
+{% block content %}
+<section class="hero-bar">
+  <div class="hero-ico">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+  </div>
+  <div>
+    <h1>Sual {{ question.number }}</h1>
+    <p>{{ exam.title }} — sual mətni və cavab variantlarını buradan düzəldin.</p>
+  </div>
+</section>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  {{ formset.non_form_errors }}
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">1</span>
+      <div>
+        <h2>Sual</h2>
+        <p class="help">Nömrə, mətn və şəkil</p>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div>
+        <label class="field-label" for="{{ form.number.id_for_label }}">Nömrə</label>
+        {{ form.number }}{{ form.number.errors }}
+      </div>
+      <div>
+        <label class="field-label" for="{{ form.points.id_for_label }}">Bu sualın balı</label>
+        {{ form.points }}{{ form.points.errors }}
+        <p class="help">Boşdursa ümumi tənzimləmədəki bal götürülür.</p>
+      </div>
+      <div>
+        <label class="field-label" for="{{ form.subject.id_for_label }}">Fənn</label>
+        {{ form.subject }}{{ form.subject.errors }}
+      </div>
+      <div class="full">
+        <label class="field-label" for="{{ form.text.id_for_label }}">Sual mətni</label>
+        {{ form.text }}{{ form.text.errors }}
+      </div>
+      <div class="full">
+        <label class="field-label" for="{{ form.image.id_for_label }}">Sual şəkli</label>
+        {{ form.image }}{{ form.image.errors }}
+      </div>
+    </div>
+  </section>
+
+  <section class="step-card">
+    <div class="step-head">
+      <span class="step-num">2</span>
+      <div>
+        <h2>Variantlar</h2>
+        <p class="help">Mətn, şəkil və düzgün cavabı işarələyin. Boş sətir yeni variantdır.</p>
+      </div>
+    </div>
+    {{ formset.management_form }}
+    <div class="choice-edit-list">
+      {% for choice_form in formset %}
+        <div class="choice-edit">
+          {{ choice_form.id }}
+          <div class="choice-edit-head">
+            <label class="field-label">{{ choice_form.letter.label }}</label>
+            {{ choice_form.letter }}
+            <label class="choice-correct">{{ choice_form.is_correct }} Düzgün cavab</label>
+            {% if choice_form.DELETE %}
+              <label class="choice-correct">{{ choice_form.DELETE }} Sil</label>
+            {% endif %}
+          </div>
+          {{ choice_form.letter.errors }}
+          {{ choice_form.text }}{{ choice_form.text.errors }}
+          {{ choice_form.image }}{{ choice_form.image.errors }}
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <div class="footer-bar">
+    <button class="btn primary" type="submit">Saxla</button>
+    <a class="btn" href="{% url 'panel_exam_detail' exam.pk %}#suallar">Geri</a>
+    <button class="btn danger" type="submit" form="delete-question">Sualı sil</button>
+  </div>
+</form>
+
+<form id="delete-question" method="post" action="{% url 'panel_question_delete' exam.pk question.pk %}" onsubmit="return confirm('Bu sual silinsin?');">
+  {% csrf_token %}
+</form>
+{% endblock %}

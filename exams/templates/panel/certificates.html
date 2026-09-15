@@ -1,0 +1,39 @@
+{% extends "panel/base.html" %}
+{% block title %}Sertifikatlar{% endblock %}
+{% block content %}
+<section class="hero-bar">
+  <div class="hero-ico">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+  </div>
+  <div>
+    <h1>Sertifikatlar</h1>
+    <p>Keçid balını toplayan tələbələrə verilən sənədlər.</p>
+  </div>
+</section>
+<section class="panel-card">
+  <div class="table-wrap">
+    <table class="data">
+      <thead>
+        <tr><th>Kod</th><th>Tələbə</th><th>İmtahan</th><th>Bal</th><th>Tarix</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for item in certificates %}
+          <tr>
+            <td>{{ item.code }}</td>
+            <td>{{ item.student_name }}</td>
+            <td>{{ item.submission.exam.title }}</td>
+            <td>{{ item.submission.score }}%</td>
+            <td>{{ item.issued_at|date:"d.m.Y" }}</td>
+            <td class="actions">
+              <a class="btn" href="{% url 'panel_certificate_view' item.pk %}">Bax</a>
+              <a class="btn primary" href="{% url 'panel_certificate_pdf' item.pk %}">PDF</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="6" class="muted">Hələ sertifikat yoxdur.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

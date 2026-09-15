@@ -1,0 +1,26 @@
+{% extends "panel/base.html" %}
+{% block title %}Sertifikat {{ certificate.code }}{% endblock %}
+{% block content %}
+<section class="hero-bar">
+  <div class="hero-ico">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/></svg>
+  </div>
+  <div>
+    <h1>Sertifikat</h1>
+    <p>{{ certificate.code }}</p>
+  </div>
+</section>
+<div class="footer-bar" style="margin-bottom:14px">
+  <a class="btn primary" href="{% url 'panel_certificate_pdf' certificate.pk %}">PDF yüklə</a>
+  <a class="btn" href="{% url 'panel_certificates' %}">Siyahı</a>
+</div>
+<section class="certificate-sheet">
+  <p class="muted">ONLAYN SINAQ İMTAHANI</p>
+  <h1>SERTİFİKAT</h1>
+  <p>Bu sənəd təsdiq edir ki,</p>
+  <p class="certificate-name">{{ certificate.student_name }}</p>
+  <p>«{{ certificate.submission.exam.title }}» imtahanını uğurla başa vurmuşdur.</p>
+  <p><strong>Nəticə: {{ certificate.submission.score }}%</strong> · Keçid balı: {{ certificate.submission.exam.passing_score }}%</p>
+  <p class="muted">Tarix: {{ certificate.issued_at|date:"d.m.Y" }} · Kod: {{ certificate.code }}</p>
+</section>
+{% endblock %}

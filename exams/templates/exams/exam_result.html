@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Nəticə — {{ submission.exam.title }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/sheet.css' %}">{% endblock %}
+{% block content %}
+{% include "exams/_answer_sheet.html" %}
+{% endblock %}

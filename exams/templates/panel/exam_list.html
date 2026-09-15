@@ -1,0 +1,57 @@
+{% extends "panel/base.html" %}
+{% block title %}İmtahan siyahısı{% endblock %}
+{% block content %}
+<section class="hero-bar">
+  <div class="hero-ico">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+  </div>
+  <div>
+    <h1>Siyahı</h1>
+    <p>Bütün imtahanlar, açılma/bağlanma tarixləri və statuslar.</p>
+  </div>
+</section>
+<div class="footer-bar" style="margin-bottom:14px">
+  <a class="btn primary" href="{% url 'panel_exam_create' %}">Yeni imtahan</a>
+</div>
+<section class="panel-card">
+  <div class="table-wrap">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>Ad</th>
+          <th>Status</th>
+          <th>Açılır</th>
+          <th>Bağlanır</th>
+          <th>Suallar</th>
+          <th>Nəticələr</th>
+          <th>Əməliyyat</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for exam in exams %}
+          <tr>
+            <td>
+              <a href="{% url 'panel_exam_detail' exam.pk %}">{{ exam.title }}</a>
+              <a class="btn" href="{% url 'panel_exam_settings' exam.pk %}" style="margin-left:8px">Tənzimləmə</a>
+            </td>
+            <td><span class="badge {{ exam.availability_status }}">{{ exam.availability_label }}</span></td>
+            <td>{% if exam.opens_at %}{{ exam.opens_at|date:"d.m.Y H:i" }}{% else %}Dərhal{% endif %}</td>
+            <td>{% if exam.closes_at %}{{ exam.closes_at|date:"d.m.Y H:i" }}{% else %}Limitsiz{% endif %}</td>
+            <td>{{ exam.question_total }}</td>
+            <td>{{ exam.submission_total }}</td>
+            <td>
+              <div class="row-actions">
+                <a class="btn" href="{% url 'panel_exam_detail' exam.pk %}">Redaktə</a>
+                <a class="btn" href="{% url 'panel_exam_detail' exam.pk %}#suallar">Suallara bax</a>
+                <a class="btn danger" href="{% url 'panel_exam_delete' exam.pk %}">Sil</a>
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="7" class="muted">Hələ imtahan yoxdur.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
