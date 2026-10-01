@@ -131,6 +131,51 @@ class QuestionParseTests(TestCase):
         with self.assertRaises(ParseError):
             parse_questions("Heç bir sual yoxdur.")
 
+    def test_new_section_restart_does_not_swallow_questions(self):
+        text = """
+4. Verilmiş cümlədə simvolun yerinə hansı şəkilçi yazıla bilər?
+A) -çı
+B) -çi
+C) -çu
+D) -cə
+E) -ca
+
+1. "?" işarəsinin yerinə uyğun gəlməyən söz hansıdır?
+A) k...manda
+B) k...nsert
+C) k...randaş
+D) k...lbasa
+E) k...smonavt
+
+2. Hansı cümlədə bütün sözlər düzgün yazılıb?
+A) Təbiyyət
+B) Palıd
+C) Kitab
+D) Qədim
+E) Karvan
+
+5. Hansı cümlədə 3 söz səhv yazılıb?
+A) bir
+B) iki
+C) üç
+D) dörd
+E) beş
+"""
+        questions = parse_questions(text)
+        numbers = [item["number"] for item in questions]
+        self.assertEqual(numbers, [4, 5, 6, 9])
+        q4 = next(item for item in questions if item["number"] == 4)
+        self.assertEqual(q4["text"], "Verilmiş cümlədə simvolun yerinə hansı şəkilçi yazıla bilər?")
+        self.assertEqual(q4["choices"][-1]["text"], "-ca")
+        self.assertFalse(any("Hansı cümlədə" in choice["text"] for choice in q4["choices"]))
+        q5 = next(item for item in questions if item["number"] == 5)
+        self.assertIn("işarəsinin yerinə", q5["text"])
+        self.assertEqual(q5["choices"][3]["text"], "k...lbasa")
+        q6 = next(item for item in questions if item["number"] == 6)
+        self.assertIn("bütün sözlər düzgün", q6["text"])
+        q9 = next(item for item in questions if item["number"] == 9)
+        self.assertIn("3 söz səhv", q9["text"])
+
 
 class AnswerKeyTests(TestCase):
     def test_comma_separated_key(self):
@@ -192,6 +237,29 @@ class ImportExamTests(TestCase):
         self.assertEqual(Question.objects.filter(exam=exam).count(), 1)
         self.assertEqual(Question.objects.get(exam=exam).text, "Yeni sual?")
         self.assertEqual(Choice.objects.filter(question__exam=exam, is_correct=True).count(), 0)
+
+
+class MediaUrlTests(TestCase):
+    def test_media_url_is_root_absolute(self):
+        from django.conf import settings
+
+        self.assertTrue(settings.MEDIA_URL.startswith("/"))
+        self.assertTrue(settings.STATIC_URL.startswith("/"))
+
+    def test_question_image_src_is_not_relative_to_exam_path(self):
+        from django.core.files.base import ContentFile
+
+        user = complete_student("sekilci")
+        exam = Exam.objects.create(title="Şəkilli", duration_minutes=10, is_active=True)
+        question = Question.objects.create(exam=exam, number=1, text="Şəkil sualı")
+        Choice.objects.create(question=question, letter="A", text="a", is_correct=True)
+        question.image.save("q1.png", ContentFile(b"\x89PNG\r\n\x1a\n"), save=True)
+        self.client.force_login(user)
+        response = self.client.get(f"/exams/{exam.pk}/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, f'src="{question.image.url}"')
+        self.assertTrue(question.image.url.startswith("/media/"))
+        self.assertNotContains(response, f"/exams/{exam.pk}/media/")
 
 
 def complete_student(

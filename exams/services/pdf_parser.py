@@ -22,10 +22,11 @@ ANSWER_KEY_ITEM = re.compile(
 )
 QUESTION_LINE = re.compile(r"^\s*(\d{1,3})\s*[\.\)\:]\s+")
 HEADER_LINE = re.compile(
-    r"^\s*(BİOLOGİYA|MÜƏLLİM İMTAHANI\s*[–—-].*|AÇIQ TİPLİ TEST TAPŞIRIQLARI)\s*$",
+    r"^\s*(BİOLOGİYA|MÜƏLLİM İMTAHANI\s*[–—-].*|AÇIQ TİPLİ TEST TAPŞIRIQLARI|"
+    r"Azərbaycan dili|Riyaziyyat|İngilis dili|Rus dili|Həyat bilgisi|Məntiq)\s*$",
     re.IGNORECASE,
 )
-HEADER_BAND = 56
+HEADER_BAND = 72
 
 _SYMBOL_TABLE = str.maketrans(
     {
@@ -179,7 +180,7 @@ def _clip_text(page, rect) -> str:
     return _prepare(page.get_text("text", clip=rect) or "")
 
 
-def _pymupdf_page_text(page) -> str:
+def _pymupdf_page_text(page) -> tuple[str, bool]:
     import pymupdf
 
     mid = page.rect.width / 2
@@ -194,18 +195,21 @@ def _pymupdf_page_text(page) -> str:
     left_q = len(QUESTION_START.findall(left))
     right_q = len(QUESTION_START.findall(right))
     if left_q and right_q:
-        return f"{left}\n\n{right}"
-    return _clip_text(page, pymupdf.Rect(0, HEADER_BAND, page.rect.width, page.rect.height))
+        return f"{left}\n\n{right}", True
+    return _clip_text(page, pymupdf.Rect(0, HEADER_BAND, page.rect.width, page.rect.height)), False
 
 
-def _pymupdf_text(data: bytes) -> str:
+def _pymupdf_text(data: bytes) -> tuple[str, bool]:
     import pymupdf
 
     pages = []
+    used_columns = False
     with pymupdf.open(stream=data, filetype="pdf") as document:
         for page in document:
-            pages.append(_pymupdf_page_text(page))
-    return "\n".join(pages).strip()
+            text, columns = _pymupdf_page_text(page)
+            used_columns = used_columns or columns
+            pages.append(text)
+    return "\n".join(pages).strip(), used_columns
 
 
 def _question_score(text: str) -> tuple[int, int, int]:
@@ -217,6 +221,7 @@ def extract_pdf_text(pdf_file: BinaryIO | bytes | str) -> str:
     data = _read_bytes(pdf_file)
     plumber_text = ""
     fitz_text = ""
+    fitz_columns = False
     plumber_error = None
     fitz_error = None
 
@@ -226,9 +231,12 @@ def extract_pdf_text(pdf_file: BinaryIO | bytes | str) -> str:
         plumber_error = exc
 
     try:
-        fitz_text = _pymupdf_text(data)
+        fitz_text, fitz_columns = _pymupdf_text(data)
     except Exception as exc:  # noqa: BLE001
         fitz_error = exc
+
+    if fitz_text and fitz_columns:
+        return fitz_text
 
     candidates = [text for text in (fitz_text, plumber_text) if text]
     if not candidates:
@@ -238,8 +246,29 @@ def extract_pdf_text(pdf_file: BinaryIO | bytes | str) -> str:
     return max(candidates, key=_question_score)
 
 
+def _choice_letter_count(text: str) -> int:
+    return len({letter.upper() for letter in CHOICE_START.findall(text or "")})
+
+
+def _is_real_question_body(body: str) -> bool:
+    """Alt bənd (1. 2.) deyil, A–E variantlı həqiqi sualdır."""
+    return _choice_letter_count(body) >= 3
+
+
+def _cut_at_next_question(text: str) -> str:
+    for match in QUESTION_START.finditer(text):
+        rest = (text[match.end() :] or "").lstrip()
+        if _is_real_question_body(rest) or (rest and rest[0].isalpha()):
+            return text[: match.start()]
+    return text
+
+
 def parse_questions(text: str) -> list[dict]:
-    """Standart sual/variant formatını dictionary siyahısına çevirir."""
+    """Standart sual/variant formatını dictionary siyahısına çevirir.
+
+    Yeni fənn 1-dən yenidən başlayanda əvvəlki suala qatılmır; nömrələr
+    unikal qalsın deyə ofsetlə davam edir.
+    """
     normalized = _prepare(text)
     matches = list(QUESTION_START.finditer(normalized))
     if not matches:
@@ -247,21 +276,32 @@ def parse_questions(text: str) -> list[dict]:
             "PDF-də sual tapılmadı. Gözlənilən format: '1.', '1)' və ya 'Sual 1:'."
         )
 
-    filtered = []
-    max_number = 0
-    for match in matches:
-        number = int(match.group(1))
-        if number <= max_number:
-            continue
-        filtered.append(match)
-        max_number = number
+    real: list[re.Match[str]] = []
+    for index, match in enumerate(matches):
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(normalized)
+        body = normalized[match.end() : end]
+        if _is_real_question_body(body):
+            real.append(match)
+
+    if not real:
+        raise ParseError(
+            "PDF-də sual tapılmadı. Gözlənilən format: '1.', '1)' və ya 'Sual 1:'."
+        )
 
     questions: list[dict] = []
-    for index, match in enumerate(filtered):
-        number = int(match.group(1))
+    offset = 0
+    last_original = 0
+    for index, match in enumerate(real):
+        original = int(match.group(1))
+        if last_original and original <= last_original:
+            offset = questions[-1]["number"] if questions else 0
+        assigned = offset + original
         start = match.end()
-        end = filtered[index + 1].start() if index + 1 < len(filtered) else len(normalized)
-        questions.append(_parse_question_body(number, normalized[start:end]))
+        end = real[index + 1].start() if index + 1 < len(real) else len(normalized)
+        body = normalized[start:end]
+        parsed = _parse_question_body(assigned, body)
+        questions.append(parsed)
+        last_original = original
     return questions
 
 
@@ -302,7 +342,8 @@ def _parse_question_body(number: int, body: str) -> dict:
             if index + 1 < len(choice_matches)
             else len(body)
         )
-        choices.append({"letter": letter, "text": _format_choice_text(body[start:end])})
+        raw = _cut_at_next_question(body[start:end])
+        choices.append({"letter": letter, "text": _format_choice_text(raw)})
     return {"number": number, "text": question_text, "choices": choices}
 
 
@@ -363,22 +404,41 @@ def _question_heads(page) -> list[tuple[int, float, float, float]]:
     return heads
 
 
+def _head_has_choices(page, x0: float, y0: float, y1: float) -> bool:
+    import pymupdf
+
+    mid = page.rect.width / 2
+    left_col = x0 < mid
+    col_x0 = 8 if left_col else mid + 4
+    col_x1 = mid - 4 if left_col else page.rect.width - 8
+    probe = pymupdf.Rect(col_x0, y0, col_x1, min(page.rect.height - 8, y1 + 140))
+    snippet = _prepare(page.get_text("text", clip=probe) or "")
+    return _is_real_question_body(snippet)
+
+
 def collect_question_regions(pdf_file: BinaryIO | bytes | str) -> list[tuple[int, int, object]]:
-    """Monoton artan sual nömrələri üçün (number, page_index, rect) qaytarır."""
+    """Həqiqi (variantlı) suallar üçün (assigned_number, page_index, rect) qaytarır."""
     import pymupdf
 
     data = _read_bytes(pdf_file)
     regions: list[tuple[int, int, object]] = []
-    max_number = 0
+    offset = 0
+    last_original = 0
+    last_assigned = 0
     with pymupdf.open(stream=data, filetype="pdf") as document:
         for page_index, page in enumerate(document):
             heads = _question_heads(page)
             accepted: list[tuple[int, float, float, float]] = []
             for head in heads:
-                if head[0] <= max_number:
-                    continue
-                accepted.append(head)
-                max_number = head[0]
+                number, x0, y0, y1 = head
+                if last_original and number <= last_original:
+                    if not _head_has_choices(page, x0, y0, y1):
+                        continue
+                    offset = last_assigned
+                assigned = offset + number
+                accepted.append((assigned, x0, y0, y1))
+                last_original = number
+                last_assigned = assigned
             if not accepted:
                 continue
             mid = page.rect.width / 2
