@@ -12,6 +12,7 @@ from exams.services.pdf_parser import (
     ParseError,
     apply_answer_key,
     decode_azlat,
+    extract_pdf_text,
     import_exam_from_pdf,
     parse_answer_key,
     parse_questions,
@@ -50,6 +51,37 @@ def make_pdf(text: str) -> bytes:
     document = pymupdf.open()
     page = document.new_page()
     page.insert_textbox(pymupdf.Rect(50, 50, 550, 800), text, fontsize=11)
+    data = document.tobytes()
+    document.close()
+    return data
+
+
+def make_scrambled_twocolumn_pdf() -> bytes:
+    """İki sütun + 2x2 variant toru; PDF-də əvvəl aşağıdakı sual çəkilir."""
+    import pymupdf
+
+    document = pymupdf.open()
+    page = document.new_page(width=596, height=842)
+    page.insert_text((320, 400), "4. Natiq cox temiz oglandir.", fontsize=11)
+    page.insert_text((330, 430), "A) -ci", fontsize=11)
+    page.insert_text((330, 460), "C) -kar", fontsize=11)
+    page.insert_text((460, 430), "B) -in", fontsize=11)
+    page.insert_text((460, 460), "D) -ler", fontsize=11)
+    page.insert_text((32, 140), "1. Birinci sual hansidir?", fontsize=11)
+    page.insert_text((44, 170), "A) bir-a", fontsize=11)
+    page.insert_text((44, 200), "C) bir-c", fontsize=11)
+    page.insert_text((177, 170), "B) bir-b", fontsize=11)
+    page.insert_text((177, 200), "D) bir-d", fontsize=11)
+    page.insert_text((32, 280), "2. Ikinci sual hansidir?", fontsize=11)
+    page.insert_text((44, 310), "A) iki-a", fontsize=11)
+    page.insert_text((44, 340), "B) iki-b", fontsize=11)
+    page.insert_text((44, 370), "C) iki-c", fontsize=11)
+    page.insert_text((44, 400), "D) iki-d", fontsize=11)
+    page.insert_text((320, 140), "3. Ucuncu sual hansidir?", fontsize=11)
+    page.insert_text((330, 170), "A) uc-a", fontsize=11)
+    page.insert_text((330, 200), "B) uc-b", fontsize=11)
+    page.insert_text((330, 230), "C) uc-c", fontsize=11)
+    page.insert_text((330, 260), "D) uc-d", fontsize=11)
     data = document.tobytes()
     document.close()
     return data
@@ -175,6 +207,60 @@ E) beş
         self.assertIn("bütün sözlər düzgün", q6["text"])
         q9 = next(item for item in questions if item["number"] == 9)
         self.assertIn("3 söz səhv", q9["text"])
+
+    def test_spaced_empty_choices_still_count_as_question(self):
+        text = (
+            "8. Verilmiş sözlərdən neçəsi dörd cür yazılan şəkilçi qəbul etmişdir?\n"
+            "  A)                  B)\n"
+            "  C)                 D)\n"
+            "9. Növbəti sual\n"
+            "A) bir\nB) iki\nC) üç\nD) dörd\n"
+        )
+        questions = parse_questions(text)
+        self.assertEqual([item["number"] for item in questions], [8, 9])
+        self.assertEqual([choice["letter"] for choice in questions[0]["choices"]], list("ABCD"))
+        self.assertIn("dörd cür", questions[0]["text"])
+
+    def test_indented_match_list_is_not_a_new_question(self):
+        text = (
+            "60. Match. Uyğunlaşdırın.\n"
+            "    1. What’s your name?\n"
+            "    2. What’s your favourite day?\n"
+            "    3. How do you spell your name?\n"
+            "A) 1-a\nB) 1-b\nC) 1-c\nD) 1-d\n"
+        )
+        questions = parse_questions(text)
+        self.assertEqual([item["number"] for item in questions], [60])
+        self.assertIn("Match", questions[0]["text"])
+        self.assertEqual(len(questions[0]["choices"]), 4)
+
+        unindented = (
+            "59. Digərlərindən fərqli olanı seçin.\n"
+            "A) peas\nB) apple\nC) orange\nD) fries\n"
+            "60. Match.\n"
+            "1. What’s your name?\n"
+            "2. What’s your favourite day?\n"
+            "3. How do you spell your name?\n"
+            "A) 1-a\nB) 1-b\nC) 1-c\nD) 1-d\n"
+        )
+        questions = parse_questions(unindented)
+        self.assertEqual([item["number"] for item in questions], [59, 60])
+        self.assertIn("Match", questions[1]["text"])
+
+    def test_twocolumn_pdf_uses_visual_order_not_draw_order(self):
+        questions = parse_questions(extract_pdf_text(make_scrambled_twocolumn_pdf()))
+        self.assertEqual([item["number"] for item in questions], [1, 2, 3, 4])
+        first = questions[0]
+        self.assertIn("Birinci sual", first["text"])
+        self.assertEqual([choice["letter"] for choice in first["choices"]], list("ABCD"))
+        self.assertEqual([choice["text"] for choice in first["choices"]], ["bir-a", "bir-b", "bir-c", "bir-d"])
+        self.assertFalse(any("Natiq" in choice["text"] for choice in first["choices"]))
+        self.assertIn("Ikinci sual", questions[1]["text"])
+        self.assertIn("Ucuncu sual", questions[2]["text"])
+        fourth = questions[3]
+        self.assertIn("Natiq", fourth["text"])
+        self.assertEqual(fourth["choices"][0]["text"], "-ci")
+        self.assertEqual(fourth["choices"][1]["text"], "-in")
 
 
 class AnswerKeyTests(TestCase):
@@ -378,6 +464,27 @@ class PanelTests(TestCase):
         self.assertIsNotNone(exam.opens_at)
         self.assertIsNotNone(exam.closes_at)
 
+    def test_create_exam_without_pdf_opens_question_form(self):
+        response = self.client.post(
+            "/panel/exams/new/",
+            {
+                "title": "Əl ilə imtahan",
+                "duration_minutes": 30,
+                "passing_score": 50,
+                "is_active": "on",
+            },
+        )
+        exam = Exam.objects.get(title="Əl ilə imtahan")
+        self.assertEqual(exam.questions.count(), 0)
+        self.assertRedirects(response, f"/panel/exams/{exam.pk}/questions/new/")
+
+    def test_create_page_says_pdf_is_optional(self):
+        response = self.client.get("/panel/exams/new/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Yeni imtahan")
+        self.assertContains(response, "PDF-dən idxal (istəyə bağlı)")
+        self.assertContains(response, "Sualları özünüz yazın")
+
 
 class AdminImportViewTests(TestCase):
     def setUp(self):
@@ -512,6 +619,67 @@ class PanelQuestionEditTests(TestCase):
         response = self.client.get(f"/panel/exams/{self.exam.pk}/")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, f"/panel/exams/{self.exam.pk}/questions/{self.question.pk}/")
+        self.assertContains(response, "Sual əlavə et")
+        self.assertContains(response, f"/panel/exams/{self.exam.pk}/questions/new/")
+
+    def test_staff_can_open_manual_question_form(self):
+        self.client.force_login(self.admin)
+        response = self.client.get(f"/panel/exams/{self.exam.pk}/questions/new/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Yeni sual")
+        self.assertContains(response, "Saxla və növbəti sual")
+
+    def test_staff_can_add_question_manually(self):
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            f"/panel/exams/{self.exam.pk}/questions/new/",
+            {
+                "number": "2",
+                "text": "Əl ilə yazılmış sual",
+                "choices-TOTAL_FORMS": "5",
+                "choices-INITIAL_FORMS": "0",
+                "choices-MIN_NUM_FORMS": "0",
+                "choices-MAX_NUM_FORMS": "5",
+                "choices-0-letter": "A",
+                "choices-0-text": "birinci",
+                "choices-1-letter": "B",
+                "choices-1-text": "ikinci",
+                "choices-1-is_correct": "on",
+                "choices-2-letter": "C",
+                "choices-2-text": "üçüncü",
+                "choices-3-letter": "D",
+                "choices-3-text": "",
+                "choices-4-letter": "E",
+                "choices-4-text": "",
+            },
+        )
+        self.assertRedirects(response, f"/panel/exams/{self.exam.pk}/#suallar")
+        question = Question.objects.get(exam=self.exam, number=2)
+        self.assertEqual(question.text, "Əl ilə yazılmış sual")
+        self.assertEqual(
+            list(question.choices.order_by("letter").values_list("letter", "text")),
+            [("A", "birinci"), ("B", "ikinci"), ("C", "üçüncü")],
+        )
+        self.assertTrue(question.choices.get(letter="B").is_correct)
+
+    def test_staff_can_save_and_add_another_question(self):
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            f"/panel/exams/{self.exam.pk}/questions/new/",
+            {
+                "number": "2",
+                "text": "Növbəti üçün saxla",
+                "add_another": "1",
+                "choices-TOTAL_FORMS": "5",
+                "choices-INITIAL_FORMS": "0",
+                "choices-MIN_NUM_FORMS": "0",
+                "choices-MAX_NUM_FORMS": "5",
+                "choices-0-letter": "A",
+                "choices-0-text": "cavab",
+            },
+        )
+        self.assertRedirects(response, f"/panel/exams/{self.exam.pk}/questions/new/")
+        self.assertTrue(Question.objects.filter(exam=self.exam, number=2).exists())
 
     def test_staff_can_edit_question_and_choices(self):
         self.client.force_login(self.admin)

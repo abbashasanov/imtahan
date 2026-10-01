@@ -14,7 +14,7 @@ QUESTION_START = re.compile(
     re.IGNORECASE,
 )
 CHOICE_START = re.compile(
-    r"(?m)(?:^|\s)([A-E])\s*[\.\)]\s*",
+    r"(?m)(?:^|\s)([A-E])\s*[\.\)]",
 )
 ANSWER_KEY_ITEM = re.compile(
     r"(\d{1,3})\s*[-.:\)]\s*([A-E])",
@@ -177,7 +177,7 @@ def _pdfplumber_text(data: bytes) -> str:
 
 
 def _clip_text(page, rect) -> str:
-    return _prepare(page.get_text("text", clip=rect) or "")
+    return _prepare(page.get_text("text", clip=rect, sort=True) or "")
 
 
 def _pymupdf_page_text(page) -> tuple[str, bool]:
@@ -192,9 +192,10 @@ def _pymupdf_page_text(page) -> tuple[str, bool]:
         page,
         pymupdf.Rect(mid + gutter, HEADER_BAND, page.rect.width, page.rect.height),
     )
-    left_q = len(QUESTION_START.findall(left))
-    right_q = len(QUESTION_START.findall(right))
-    if left_q and right_q:
+    heads = _question_heads(page)
+    left_heads = sum(1 for _n, x0, _y0, _y1 in heads if x0 < mid)
+    right_heads = sum(1 for _n, x0, _y0, _y1 in heads if x0 >= mid)
+    if left_heads and right_heads:
         return f"{left}\n\n{right}", True
     return _clip_text(page, pymupdf.Rect(0, HEADER_BAND, page.rect.width, page.rect.height)), False
 
@@ -263,6 +264,29 @@ def _cut_at_next_question(text: str) -> str:
     return text
 
 
+def _drop_inner_numbered_lists(
+    matches: list[re.Match[str]], text: str
+) -> list[re.Match[str]]:
+    """Match tapşırığındakı '1. 2. 3.' siyahısını yeni sual saymır."""
+    kept: list[re.Match[str]] = []
+    for index, match in enumerate(matches):
+        original = int(match.group(1))
+        indent = len(re.match(r"[ \t]*", match.group(0)).group(0))
+        last_major = 0
+        for prev in reversed(kept):
+            prev_n = int(prev.group(1))
+            if prev_n >= 10:
+                last_major = prev_n
+                break
+        if original <= 3 and last_major >= 10:
+            end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+            body = text[match.end() : end]
+            if not (original == 1 and indent <= 1 and _is_real_question_body(body)):
+                continue
+        kept.append(match)
+    return kept
+
+
 def parse_questions(text: str) -> list[dict]:
     """Standart sual/variant formatını dictionary siyahısına çevirir.
 
@@ -270,7 +294,7 @@ def parse_questions(text: str) -> list[dict]:
     unikal qalsın deyə ofsetlə davam edir.
     """
     normalized = _prepare(text)
-    matches = list(QUESTION_START.finditer(normalized))
+    matches = _drop_inner_numbered_lists(list(QUESTION_START.finditer(normalized)), normalized)
     if not matches:
         raise ParseError(
             "PDF-də sual tapılmadı. Gözlənilən format: '1.', '1)' və ya 'Sual 1:'."
@@ -412,7 +436,7 @@ def _head_has_choices(page, x0: float, y0: float, y1: float) -> bool:
     col_x0 = 8 if left_col else mid + 4
     col_x1 = mid - 4 if left_col else page.rect.width - 8
     probe = pymupdf.Rect(col_x0, y0, col_x1, min(page.rect.height - 8, y1 + 140))
-    snippet = _prepare(page.get_text("text", clip=probe) or "")
+    snippet = _clip_text(page, probe)
     return _is_real_question_body(snippet)
 
 
@@ -431,6 +455,14 @@ def collect_question_regions(pdf_file: BinaryIO | bytes | str) -> list[tuple[int
             accepted: list[tuple[int, float, float, float]] = []
             for head in heads:
                 number, x0, y0, y1 = head
+                if (
+                    accepted
+                    and number <= 3
+                    and last_original >= 10
+                    and abs(x0 - accepted[-1][1]) < 30
+                    and 0 < y0 - accepted[-1][2] < 140
+                ):
+                    continue
                 if last_original and number <= last_original:
                     if not _head_has_choices(page, x0, y0, y1):
                         continue

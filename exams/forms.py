@@ -134,6 +134,12 @@ class PanelExamForm(forms.ModelForm):
             self.fields[name].required = False
         self.fields["duration_minutes"].required = False
         self.fields["grade"].required = False
+        self.fields["pdf_file"].required = False
+        self.fields["pdf_file"].label = "PDF faylı (istəyə bağlı)"
+        self.fields["pdf_file"].help_text = (
+            "Yükləsəniz suallar avtomatik çıxarılır. "
+            "İstəməsəniz imtahanı saxlayıb sualları özünüz yazın."
+        )
         if self.instance.pk:
             for name in ("opens_at", "closes_at"):
                 value = getattr(self.instance, name)
@@ -416,7 +422,7 @@ class ChoiceEditForm(forms.ModelForm):
         text = (cleaned.get("text") or "").strip()
         image = cleaned.get("image")
         is_correct = cleaned.get("is_correct")
-        has_content = bool(letter or text or image or is_correct)
+        has_content = bool(text or image or is_correct)
         if has_content and not letter:
             self.add_error("letter", "Variantın hərfini seçin.")
         if not has_content:
@@ -429,6 +435,15 @@ QuestionChoiceFormSet = inlineformset_factory(
     Choice,
     form=ChoiceEditForm,
     extra=1,
+    max_num=5,
+    can_delete=True,
+)
+
+QuestionChoiceCreateFormSet = inlineformset_factory(
+    Question,
+    Choice,
+    form=ChoiceEditForm,
+    extra=5,
     max_num=5,
     can_delete=True,
 )

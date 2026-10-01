@@ -12,7 +12,13 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 
-from exams.forms import ExamSettingsForm, PanelExamForm, QuestionChoiceFormSet, QuestionEditForm
+from exams.forms import (
+    ExamSettingsForm,
+    PanelExamForm,
+    QuestionChoiceCreateFormSet,
+    QuestionChoiceFormSet,
+    QuestionEditForm,
+)
 from exams.models import Certificate, Choice, Exam, ExamSubmission, Question, Subject
 from exams.regions import BAKU, GRADE_CHOICES, grade_label
 from exams.services.scoring import (
@@ -103,9 +109,12 @@ def exam_create(request):
                         request,
                         f"«{exam.title}» yaradıldı. {stats['questions']} sual, {stats['choices']} variant yazıldı. Düzgün cavabları aşağıda təyin edin.",
                     )
-                else:
-                    messages.success(request, f"«{exam.title}» yaradıldı.")
-                return redirect("panel_exam_detail", pk=exam.pk)
+                    return redirect("panel_exam_detail", pk=exam.pk)
+                messages.success(
+                    request,
+                    f"«{exam.title}» yaradıldı. İndi sual əlavə edin və ya sonra PDF yükləyin.",
+                )
+                return redirect("panel_question_create", exam_pk=exam.pk)
     else:
         form = PanelExamForm()
     return render(request, "panel/exam_form.html", {"form": form, "mode": "create"})
@@ -205,14 +214,35 @@ def question_edit(request, exam_pk, pk):
 @staff_required
 def question_create(request, exam_pk):
     exam = get_object_or_404(Exam, pk=exam_pk)
-    if request.method != "POST":
-        return redirect("panel_exam_detail", pk=exam.pk)
     next_number = (exam.questions.aggregate(max_n=Max("number")).get("max_n") or 0) + 1
-    question = Question.objects.create(exam=exam, number=next_number, text="Yeni sual")
-    for letter in "ABCDE":
-        Choice.objects.get_or_create(question=question, letter=letter, defaults={"text": ""})
-    messages.success(request, f"Sual {question.number} əlavə olundu. Mətni və variantları redaktə edin.")
-    return redirect("panel_question_edit", exam_pk=exam.pk, pk=question.pk)
+    question = Question(exam=exam, number=next_number)
+    if request.method == "POST":
+        form = QuestionEditForm(request.POST, request.FILES, instance=question)
+        formset = QuestionChoiceCreateFormSet(
+            request.POST, request.FILES, instance=question, prefix="choices"
+        )
+        if form.is_valid() and formset.is_valid():
+            question = form.save(commit=False)
+            question.exam = exam
+            question.save()
+            formset.instance = question
+            formset.save()
+            messages.success(request, f"Sual {question.number} əlavə olundu.")
+            if request.POST.get("add_another"):
+                return redirect("panel_question_create", exam_pk=exam.pk)
+            return redirect(f"{reverse('panel_exam_detail', args=[exam.pk])}#suallar")
+    else:
+        form = QuestionEditForm(instance=question)
+        formset = QuestionChoiceCreateFormSet(
+            instance=question,
+            prefix="choices",
+            initial=[{"letter": letter} for letter in "ABCDE"],
+        )
+    return render(
+        request,
+        "panel/question_form.html",
+        {"exam": exam, "question": question, "form": form, "formset": formset},
+    )
 
 
 @staff_required

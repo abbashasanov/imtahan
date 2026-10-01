@@ -1,13 +1,13 @@
 {% extends "panel/base.html" %}
-{% block title %}Sual {{ question.number }} — {{ exam.title }}{% endblock %}
+{% block title %}{% if question.pk %}Sual {{ question.number }}{% else %}Yeni sual{% endif %} — {{ exam.title }}{% endblock %}
 {% block content %}
 <section class="hero-bar">
   <div class="hero-ico">
     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
   </div>
   <div>
-    <h1>Sual {{ question.number }}</h1>
-    <p>{{ exam.title }} — sual mətni və cavab variantlarını buradan düzəldin.</p>
+    <h1>{% if question.pk %}Sual {{ question.number }}{% else %}Yeni sual{% endif %}</h1>
+    <p>{{ exam.title }} — sual mətni və cavab variantlarını buradan yazın.</p>
   </div>
 </section>
 
@@ -80,12 +80,19 @@
 
   <div class="footer-bar">
     <button class="btn primary" type="submit">Saxla</button>
+    {% if not question.pk %}
+      <button class="btn" type="submit" name="add_another" value="1">Saxla və növbəti sual</button>
+    {% endif %}
     <a class="btn" href="{% url 'panel_exam_detail' exam.pk %}#suallar">Geri</a>
-    <button class="btn danger" type="submit" form="delete-question">Sualı sil</button>
+    {% if question.pk %}
+      <button class="btn danger" type="submit" form="delete-question">Sualı sil</button>
+    {% endif %}
   </div>
 </form>
 
+{% if question.pk %}
 <form id="delete-question" method="post" action="{% url 'panel_question_delete' exam.pk question.pk %}" onsubmit="return confirm('Bu sual silinsin?');">
   {% csrf_token %}
 </form>
+{% endif %}
 {% endblock %}
