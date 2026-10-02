@@ -23,10 +23,21 @@ ANSWER_KEY_ITEM = re.compile(
 QUESTION_LINE = re.compile(r"^\s*(\d{1,3})\s*[\.\)\:]\s+")
 HEADER_LINE = re.compile(
     r"^\s*(BİOLOGİYA|MÜƏLLİM İMTAHANI\s*[–—-].*|AÇIQ TİPLİ TEST TAPŞIRIQLARI|"
-    r"Azərbaycan dili|Riyaziyyat|İngilis dili|Rus dili|Həyat bilgisi|Məntiq)\s*$",
+    r"Azərbaycan dili|Riyaziyyat|İngilis dili|Rus dili|Həyat bilgisi|Məntiq|"
+    r"can dili|iyyat|bilgisi)\s*$",
     re.IGNORECASE,
 )
-HEADER_BAND = 72
+HEADER_BAND = 40
+_TAIL_NOISE = re.compile(
+    r"(?:\s*(?:Azərbaycan dili|Riyaziyyat|İngilis dili|Rus dili|Həyat bilgisi|"
+    r"can dili|iyyat|bilgisi|Məntiq|BİLİK YARIŞI-?\d*|SİNİF|"
+    r"VII sinif|VI sinif|V sinif))+$",
+    re.IGNORECASE,
+)
+_PASSAGE_MARK = re.compile(
+    r"(?:Mətnə əsasən\s+\d|Read the passage|Read the text|BİLİK YARIŞI-?\d*)",
+    re.IGNORECASE,
+)
 
 _SYMBOL_TABLE = str.maketrans(
     {
@@ -145,12 +156,25 @@ def _read_bytes(pdf_file: BinaryIO | bytes | str) -> bytes:
     return data
 
 
+def _unstick_column_glyphs(text: str) -> str:
+    """Sütun kənarından yapışan başlıq qalıqlarını variant hərfindən ayırır."""
+    text = re.sub(
+        r"(?m)(^|\s)(?:SİNİF|SİN|BİLİK|YARIŞI-?\d*|Fİ|F|İ)(?=[A-E]\s*[\)\.])",
+        r"\1",
+        text,
+        flags=re.IGNORECASE,
+    )
+    text = re.sub(r"İF(?=\S)", "", text)
+    text = re.sub(r"(?<=[A-Za-zƏəÖöÜüÇçŞşĞğIıİ])SİN(?=[A-Za-zƏəÖöÜüÇçŞşĞğIıİ])", "", text)
+    return text
+
+
 def _normalize_text(text: str) -> str:
     text = text.replace("\r\n", "\n").replace("\r", "\n")
     text = text.replace("\u00a0", " ")
     text = re.sub(r"[ \t]+\n", "\n", text)
     text = re.sub(r"(\w)-\n(\w)", r"\1\2", text)
-    return text.strip()
+    return _unstick_column_glyphs(text).strip()
 
 
 def _normalize_symbols(text: str) -> str:
@@ -184,7 +208,8 @@ def _pymupdf_page_text(page) -> tuple[str, bool]:
     import pymupdf
 
     mid = page.rect.width / 2
-    gutter = 6
+    gutter = 8
+    heads = _question_heads(page)
     left = _clip_text(
         page, pymupdf.Rect(0, HEADER_BAND, mid - gutter, page.rect.height)
     )
@@ -192,12 +217,13 @@ def _pymupdf_page_text(page) -> tuple[str, bool]:
         page,
         pymupdf.Rect(mid + gutter, HEADER_BAND, page.rect.width, page.rect.height),
     )
-    heads = _question_heads(page)
     left_heads = sum(1 for _n, x0, _y0, _y1 in heads if x0 < mid)
     right_heads = sum(1 for _n, x0, _y0, _y1 in heads if x0 >= mid)
     if left_heads and right_heads:
         return f"{left}\n\n{right}", True
-    return _clip_text(page, pymupdf.Rect(0, HEADER_BAND, page.rect.width, page.rect.height)), False
+    return _clip_text(
+        page, pymupdf.Rect(0, HEADER_BAND, page.rect.width, page.rect.height)
+    ), False
 
 
 def _pymupdf_text(data: bytes) -> tuple[str, bool]:
@@ -278,7 +304,7 @@ def _drop_inner_numbered_lists(
             if prev_n >= 10:
                 last_major = prev_n
                 break
-        if original <= 3 and last_major >= 10:
+        if original <= 5 and last_major >= 10:
             end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
             body = text[match.end() : end]
             if not (original == 1 and indent <= 1 and _is_real_question_body(body)):
@@ -315,17 +341,32 @@ def parse_questions(text: str) -> list[dict]:
     questions: list[dict] = []
     offset = 0
     last_original = 0
+    last_assigned = 0
+    carry = ""
     for index, match in enumerate(real):
         original = int(match.group(1))
         if last_original and original <= last_original:
-            offset = questions[-1]["number"] if questions else 0
+            offset = last_assigned - original + 1
         assigned = offset + original
         start = match.end()
         end = real[index + 1].start() if index + 1 < len(real) else len(normalized)
         body = normalized[start:end]
+        if carry:
+            body = f"{carry}\n{body}"
+            carry = ""
+        choice_hit = CHOICE_START.search(body)
+        mark = _PASSAGE_MARK.search(body)
+        if mark and choice_hit and mark.start() > choice_hit.start():
+            carry = body[mark.start() :].strip()
+            body = body[: mark.start()]
         parsed = _parse_question_body(assigned, body)
         questions.append(parsed)
         last_original = original
+        last_assigned = assigned
+    if carry and questions:
+        questions[-1]["text"] = _clean_snippet(
+            f"{questions[-1]['text']} {carry}", keep_leading_passage=True
+        )
     return questions
 
 
@@ -347,12 +388,27 @@ def _format_choice_text(value: str) -> str:
     return text
 
 
+_PAGE_BANNER = re.compile(r"BİLİK YARIŞI-?\d*", re.IGNORECASE)
+
+
+def _clean_snippet(value: str, *, keep_leading_passage: bool = False) -> str:
+    text = _format_choice_text(value)
+    text = _PAGE_BANNER.sub(" ", text)
+    mark = _PASSAGE_MARK.search(text)
+    if mark and not (keep_leading_passage and mark.start() == 0):
+        text = text[: mark.start()]
+    text = _TAIL_NOISE.sub("", text)
+    return text.strip(" ,;.|")
+
+
 def _parse_question_body(number: int, body: str) -> dict:
     choice_matches = list(CHOICE_START.finditer(body))
     if not choice_matches:
-        return {"number": number, "text": _collapse_ws(body), "choices": []}
+        return {"number": number, "text": _clean_snippet(body, keep_leading_passage=True), "choices": []}
 
-    question_text = _collapse_ws(body[: choice_matches[0].start()])
+    question_text = _clean_snippet(
+        body[: choice_matches[0].start()], keep_leading_passage=True
+    )
     choices = []
     seen_letters: set[str] = set()
     for index, match in enumerate(choice_matches):
@@ -367,7 +423,7 @@ def _parse_question_body(number: int, body: str) -> dict:
             else len(body)
         )
         raw = _cut_at_next_question(body[start:end])
-        choices.append({"letter": letter, "text": _format_choice_text(raw)})
+        choices.append({"letter": letter, "text": _clean_snippet(raw)})
     return {"number": number, "text": question_text, "choices": choices}
 
 
@@ -457,16 +513,17 @@ def collect_question_regions(pdf_file: BinaryIO | bytes | str) -> list[tuple[int
                 number, x0, y0, y1 = head
                 if (
                     accepted
-                    and number <= 3
+                    and number <= 5
                     and last_original >= 10
-                    and abs(x0 - accepted[-1][1]) < 30
-                    and 0 < y0 - accepted[-1][2] < 140
                 ):
-                    continue
+                    dy = y0 - accepted[-1][2]
+                    dx = abs(x0 - accepted[-1][1])
+                    if 0 <= dy < 140 and (dx < 40 or dy < 22):
+                        continue
                 if last_original and number <= last_original:
                     if not _head_has_choices(page, x0, y0, y1):
                         continue
-                    offset = last_assigned
+                    offset = last_assigned - number + 1
                 assigned = offset + number
                 accepted.append((assigned, x0, y0, y1))
                 last_original = number
@@ -483,7 +540,7 @@ def collect_question_regions(pdf_file: BinaryIO | bytes | str) -> list[tuple[int
                     if (later_x < mid) == left_col:
                         next_y = later_y - 2
                         break
-                rect = pymupdf.Rect(col_x0, max(HEADER_BAND, y0 - 2), col_x1, max(y1 + 8, next_y))
+                rect = pymupdf.Rect(col_x0, max(8, y0 - 2), col_x1, max(y1 + 8, next_y))
                 if rect.height < 24 or rect.width < 40:
                     continue
                 regions.append((number, page_index, rect))

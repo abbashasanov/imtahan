@@ -1,0 +1,425 @@
+raw_starts=63 ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']...['56', '57', '58', '59', '60', '1', '2', '3']
+parsed=60 numbers=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+missing=[]
+last=60
+
+===== Q1 n=4 ABCD =====
+“?” işarəsinin yerinə uyğun gəlməyən söz hansıdır? k...smonavt o avt...mat ?
+  A) k…manda
+  B) k…nsert
+  C) k…randaş
+  D) k…lbasa
+
+===== Q2 n=4 ABCD =====
+Hansı cümlədə bütün sözlər düzgün yazılıb?
+  A) Təbiyətdəki yaşıllıq insanın ruhunu sakitləşdirir.
+  B) Leyla sinfimizin fəyal şagirdi idi.
+  C) Dünyamız hər gün gözəlləşir.
+  D) Sadət bilik yarışmasına qatılmışdı.
+
+===== Q3 n=4 ABCD =====
+“Şagir…” sözünün son hərfi ilə başlamayan söz hansıdır?
+  A) …urp
+  B) …aş
+  C) …üşmən
+  D) …ovşan
+
+===== Q4 n=4 ABCD =====
+Natiq çox təmiz oğlandır. Verilmiş cümlədə simvolun yerinə hansı şəkilçi yazıla bilər?
+  A) -çı
+  B) -in
+  C) -kar
+  D) -lər can dili
+
+===== Q5 n=4 ABCD =====
+Hansı cümlədə 3 söz səhv yazılıb?
+  A) Təcrüpəli dalğıç suyun altında uzun müdət qala bilir.
+  B) Palıt meşənin ən hündür ağaçların- dandır.
+  C) Kitab oxuyan uşaklar daha biliyli olurlar.
+  D) Qədim zamanlarda ticarət karvan yolları ilə aparılırdı.
+
+===== Q6 n=4 ABCD =====
+Verilmiş sözlərə hansı hissəcikləri artırsaq, nöqtələrin yerinə yazılmalı olan samiti müəyyənləşdirə bilərik? bulu…, dör…, zən…, mürəkkə….
+  A) -dan, -dən
+  B) -lar, -lər
+  C) -la, -lə
+  D) -a, -ə
+
+===== Q7 n=4 ABCD =====
+Hansı cümlədə altından xətt çəkilmiş söz düzəltmə sözdür?
+  A) Baba almalardan uşaqlara payladı.
+  B) Günəş səmadan boylanmışdı.
+  C) İgid əsgərlərimiz sərhədlərimizi müdafiə edirlər.
+  D) Sıx meşələr rütubətli olur. 1
+
+===== Q8 n=4 ABCD =====
+Verilmiş sözlərdən neçəsi dörd cür yazılan şəkilçi qəbul etmişdir? meşənin qızlar döşəkçə gülçü bağa sulu
+  A) 
+  B) 
+  C) 
+  D) 
+
+===== Q9 n=4 ABCD =====
+Hansı sırada kök və şəkilçiyə ayrılan sözlər doğru verilib?
+  A) əla-çı, ba-la-ca, məktəb-lər
+  B) bağ-ban, balıq-çı, yaşıl-lıq
+  C) dünya-nın, göy-də-ki, rəng-li
+  D) suyum-dan, qiymət-li, gün-əşə
+
+===== Q10 n=4 ABCD =====
+Nömrələnmiş sözlərdən hansılar cədvəldə doğru yerə qoyulmayıb?
+  A) 1, 5
+  B) 2, 6
+  C) 2, 4
+  D) 3, 5 Mətnə əsasən 11-15-ci sualları cavablandırın. Sinfimizdə Anar adlı bir oğlan oxuyurdu. O çox ağıllı idi. Günlərin bir günü o, anası üçü
+
+===== Q11 n=4 ABCD =====
+Mətnin əsas ideyası nədir?
+  A) Analar üçün hədiyyə almaq lazımdır.
+  B) Əzm və səbrlə insan məqsədinə çata bilər.
+  C) Başqalarından pul istəmək lazımdır.
+  D) Məktəbli uşaqlar səbrli olmalıdırlar. 2
+
+===== Q12 n=4 ABCD =====
+Hansı bənddəki keyfiyyət Anarın xarakterinə uyğun deyil?
+  A) tənbəl
+  B) qənaətcil
+  C) əzmkar
+  D) səbirli
+
+===== Q13 n=4 ABCD =====
+Mətnin əsas epizodu hansıdır?
+  A) Sinfimizdə Anar adlı bir oğlan oxuyurdu.
+  B) Anar düşündü ki, anası üçün güldan alsın.
+  C) Anar səbir və əzm göstərərək yığdığ pulla anasına güldan aldı.
+  D) Anası güldanı görüb çox sevindi.
+
+===== Q14 n=4 ABCD =====
+Mətndə hansı sualın cavabı var?
+  A) Anar niyə pul yığmağa başladı?
+  B) Anar niyə anasına hədiyyə almaq istədi?
+  C) Anar anasına nə dedi?
+  D) Güldanın qiyməti nə qədər idi?
+
+===== Q15 n=4 ABCD =====
+Verilmiş epizoda əsasən Aynur ilə Anarın hansı xarakteri oxşardır? Aynur atasının ona verdiyi pulları xərcləmirdi. O, fikirləşirdi ki, bir gün bu pullar mənə lazım ola bilər.
+  A) Həmişə dostları ilə vaxt keçirirlər.
+  B) Hədiyyə almağı sevirlər.
+  C) Məktəbdə yaxşı oxuyurlar.
+  D) İkisi də səbirli və qənaətcildirlər. 3 Riyaz
+
+===== Q16 n=4 ABCD =====
+Modellə verilmiş ədəd neçədir?
+  A) 361
+  B) 316
+  C) 163
+  D) 613
+
+===== Q17 n=4 ABCD =====
+Modellə verilmiş ədədlərin fərqi neçədir?
+  A) 296
+  B) 283
+  C) 287
+  D) 292
+
+===== Q18 n=4 ABCD =====
+Ədədlər altından xətt çəkilmiş hissəyə qədər yuvarlaqlaşdırılıb. Hansı bənd doğru deyil?
+  A) 247 ≈ 250
+  B) 329 ≈ 400
+  C) 518 ≈ 500
+  D) 776 ≈ 780 iyyat
+
+===== Q19 n=4 ABCD =====
+Ədəd oxunda işarələnmiş ədəd haqqında hansı fikir doğrudur? 240
+  A) Ədədin rəqəmləri cəmi 10-a bərabərdir.
+  B) Onluğu və təkliyi tək ədəddir.
+  C) Yüzlüyü və təkliyi eyni ədəddir.
+  D) Onluqlara qədər yuvarlaqlaşdırdıqda 260 alınar.
+
+===== Q20 n=4 ABCD =====
+Hansı bənddə 762 ədədinin oxunuşu doğru verilib?
+  A) Yeddi yüz iyirmi altı
+  B) Yeddi yüz altmış iki
+  C) Yeddi altmış iki
+  D) Yeddi yüz altı iki
+
+===== Q21 n=4 ABCD =====
+A < 354 müqayisəsini ödəyən ən böyük üçrəqəmli cüt ədədin onluqlarını 3 vahid, təkliklərini 5 vahid artırdıqda hansı ədəd alınar?
+  A) 365
+  B) 383
+  C) 387
+  D) 397 4
+
+===== Q22 n=4 ABCD =====
+5 ədəd muncuğu hansı modeldəki boşluğa qoysaq, əmələ gələn üçrəqəm ədədin rəqəmləri cəmi 17 olar?
+  A) 
+  B) 
+  C) 
+  D) 
+
+===== Q23 n=4 ABCD =====
+Boşluğa yazılmalı olan ədədi 3 yüzlük 5 onluq 2 təklik ilə cəmləsək, hansı bənd doğru olar? 412, 403, 394, ___, 376
+  A) 733
+  B) 742
+  C) 763
+  D) 737
+
+===== Q24 n=4 ABCD =====
+Yüzlüklərinin sayı 4, onluqlarının sayı 5 olan üçrəqəmli ədədlərin sayını tapın.
+  A) 10
+  B) 9
+  C) 12
+  D) 7
+
+===== Q25 n=4 ABCD =====
+Uyğunlaşdırın. 187 + 215 310 136 + 174 533 215 + 318 402
+  A) 
+  B) 
+  C) 
+  D) 
+
+===== Q26 n=4 ABCD =====
+Müqayisənin doğru olması üçün yerinə yazıla biləcək ədədlərin cəmi neçə olar? 5 6 < 563
+  A) 12
+  B) 10
+  C) 15
+  D) 8
+
+===== Q27 n=4 ABCD =====
+3, 5, 2 rəqəmlərindən bir dəfə istifadə etməklə yazılan ən böyük və ən kiçik üçrəqəmli ədədləri toplasaq, alınan ədədin onluqlar mərtəbə qiyməti neçə olar?
+  A) 60
+  B) 90
+  C) 9
+  D) 6 5
+
+===== Q28 n=4 ABCD =====
+Uşaqlar maşın hazırlamaq üçün 237 ədəd düzbucaqlı fiqurdan və 105 ədəd dairə fiqurundan istifadə etdilər. Uşaqlar maşını cəmi neçə fiqurla hazırladılar?
+  A) 347
+  B) 355
+  C) 362
+  D) 342
+
+===== Q29 n=4 ABCD =====
+360, 420, 480, ….. ardıcıllığında altıncı ədədin yüzlüklər mərtəbəsindəki rəqəmi neçə olacaq?
+  A) 
+  B) 
+  C) 
+  D) 
+
+===== Q30 n=4 ABCD =====
+Hansı misalın cəmi fərqlidir?
+  A) 205
+  B) 7 4 + + 170 2 5 1
+  C) 
+  D) 1 8 3 1 9 4 + + 1 4 2 1 3 1 6 Həyat
+
+===== Q31 n=4 ABCD =====
+Hansı bənddə uşaqların hüquqlarının pozulmasına aid fikir verilib?
+  A) Bütün uşaqlar təhsil ala bilər.
+  B) Balaca uşaqlar işləməyə məcbur edilə bilər.
+  C) Hər bir uşağın fikrini sərbəst ifadə edə bilər.
+  D) Uşaqlar istirahət edə bilərlər.
+
+===== Q32 n=4 ABCD =====
+Verilən keyfiyyətlərdən neçəsi müsbət keyfiyyətlərdir? lovğalıq, yalançılıq, təvazökarlıq, paxıllıq, səbirli, mehriban
+  A) 
+  B) 
+  C) 
+  D) 
+
+===== Q33 n=4 ABCD =====
+“Təvazökarlıq” keyfiyyətinə uyğun gələn davranış hansıdır?
+  A) Öz uğurlarını hər yerdə tərifləmək.
+  B) Müzakirədə diqqət mərkəzində olmamağa çalışmaq.
+  C) Sözün düzünü deməyə qorxmaq.
+  D) Başqalarının fikirlərinə hörmətlə yanaşmamaq. bilgisi
+
+===== Q34 n=4 ABCD =====
+Müsbət keyfiyyətləri necə inkişaf etdirmək olar?
+  A) Başqalarının uğurlarına paxıllıq etməklə.
+  B) Özünü hər kəsdən üstün tutmaqla.
+  C) Öz səhvlərindən nəticə çıxarmaqla.
+  D) Hər zaman başqalarını günahlandırmaqla.
+
+===== Q35 n=4 ABCD =====
+Verilmiş davranış hansı keyfiyyətə uyğundur? Səhv etdiyim zaman səhvimi çəkinmədən etiraf edirəm və gizlətmirəm.
+  A) səbirlilik
+  B) ünsiyyətlilik
+  C) mehribanlıq
+  D) cəsarətlilik
+
+===== Q36 n=4 ABCD =====
+Hansı bənddəki fikir təhsil hüququna aiddir?
+  A) Hər bir uşağın məktəbdə oxumaq hüququ var.
+  B) Uşaqların təhlükəsiz mühitdə yaşamaq hüququ var.
+  C) Hər bir uşağın oynamaq hüququ var.
+  D) Hər bir uşağın istirahət hüququ var. 7
+
+===== Q37 n=4 ABCD =====
+Verilmiş fəaliyyət hansı hüquqa aiddir? Dərslərdən sonra oyun oynamaq və dincəlmək.
+  A) təhsil
+  B) sağlamlıq
+  C) istirahət
+  D) azadlıq
+
+===== Q38 n=4 ABCD =====
+Hüquqlarımızı kim qorumalıdır?
+  A) özümüz
+  B) müəllimimiz
+  C) anamız
+  D) böyüklərimiz
+
+===== Q39 n=4 ABCD =====
+Verilmiş keyfiyyətlərdən biri müsbət keyfiyyət deyil?
+  A) şən
+  B) zarafatcıl
+  C) səmimi
+  D) böhtançılıq
+
+===== Q40 n=4 ABCD =====
+Necə insana biz “lovğa” deyirik?
+  A) Özünü başqalarından üstün hesab edən insana.
+  B) Başqalarına yardım edən insana.
+  C) Səhvlərini etiraf edən insana.
+  D) Yaxşı davranışları təqdir edən insana. 8 Mə
+
+===== Q41 n=4 ABCD =====
+a b a 36 b a+6 b= ?
+  A) 16
+  B) 10
+  C) 20
+  D) 12
+
+===== Q42 n=4 ABCD =====
+231 = 7 451 =21 631 =19 381 = ?
+  A) 18
+  B) 25
+  C) 16
+  D) 11
+
+===== Q43 n=4 ABCD =====
+Hərfləri qarışıq verilmiş sözləri düzəldin və fərqli olanı tapın.
+  A) 
+  B) irş nəik
+  C) ekçi
+  D) ipşik ntiq
+
+===== Q44 n=4 ABCD =====
+12 17 15 15 13 13 18 9 10 14 18 ?
+  A) 24
+  B) 28
+  C) 12
+  D) 22
+
+===== Q45 n=4 ABCD =====
+1 0 + = ? 2 5 3 4 5
+  A) 2
+  B) 3
+  C) 4
+  D) 5
+
+===== Q46 n=4 ABCD =====
+Məntiqi ardıcıllığa uyğun gələn söz hansıdır? kub, silindr, .......
+  A) dairə
+  B) müstəvi
+  C) üçbucaq
+  D) piramida 9
+
+===== Q47 n=4 ABCD =====
+Sözlər arasındakı əlaqəyə əsasən uyğun şəkil hansıdır? sürünən - ilan üzən - ?
+  A) 
+  B) 
+  C) 
+  D) 
+
+===== Q48 n=4 ABCD =====
+?
+  A) 
+  B) 
+  C) 
+  D) 
+
+===== Q49 n=4 ABCD =====
+‌Rəna, Lalə və Hüseyn 1-ci, 2-ci və 3-cü olmaqla fərqli siniflərdə oxuyurlar. 2-ci sinifdə oxuyan qız deyil. Rəna 1-ci sinifdə oxumur.‌ ‌Lalə‌ neçənci sinifdə oxuyur?‌
+  A) ‌
+  B) ‌
+  C) ‌
+  D) ‌
+
+===== Q50 n=4 ABCD =====
+MƏN - KİM - BİT - TAM - MƏKTƏB = ?
+  A) 
+  B) 
+  C) 
+  D) 10 İngil
+
+===== Q51 n=4 ABCD =====
+Choose the correct variant. Düzgün cavabı seçin. How are ? you?
+  A) My name is Nazrin.
+  B) I am eleven.
+  C) I’m fine, thanks.
+  D) I’m a boy.
+
+===== Q52 n=4 ABCD =====
+Choose the correct variant. Düzgün cavabı seçin. What ____ is it? ____ Thursday.
+  A) time / It’s
+  B) day / It’s
+  C) name / Is
+  D) colour / It
+
+===== Q53 n=4 ABCD =====
+What is it? Bu nədir?
+  A) numbers
+  B) spells
+  C) alphabet
+  D) days s dili
+
+===== Q54 n=4 ABCD =====
+Choose the correct variant. Düzgün cavabı seçin. How do you spell ?
+  A) S-C-H-O-L
+  B) S-C-H-O-O-L
+  C) S-H-U-L
+  D) S-K-H-O-L
+
+===== Q55 n=4 ABCD =====
+Choose the correct variant. Düzgün cavabı seçin. ?
+  A) Tuesday
+  B) Wednesday
+  C) Thursday
+  D) Sunday
+
+===== Q56 n=4 ABCD =====
+Translate. Tərcümə edin. I like peas and carrots
+  A) Mən alma və bananı sevirəm.
+  B) Mən kartof və kökü sevirəm.
+  C) Mən noxud və kökü sevirəm.
+  D) Mən alma və noxudu sevirəm. 11
+
+===== Q57 n=4 ABCD =====
+Choose the correct variant. Düzgün cavabı seçin. ... ...
+  A) 
+  B) 
+  C) 
+  D) 
+
+===== Q58 n=4 ABCD =====
+One of these days is a weekend day. Unscramble and answer. Bu günlərdən biri həftəsonudur. Hərfləri düzəldin və cavablayın.
+  A) yadSnu
+  B) dhruTsya
+  C) onMayd
+  D) dWesenayd
+
+===== Q59 n=4 ABCD =====
+Choose the one that is different from the others. Digərlərindən fərqli olanı seçin.
+  A) French fries
+  B) peas
+  C) orange
+  D) apple
+
+===== Q60 n=4 ABCD =====
+Match. Uyğunlaşdırın. 1. What’s your name? 2. What’s your favourite day? 3. How do you spell your name? It’s Saturday. J-A-C-E My name’s Jace.
+  A) 1- , 2- , 3-
+  B) 1- , 2- , 3-
+  C) 1- , 2- , 3-
+  D) 1- , 2- , 3- 12
+

@@ -56,6 +56,27 @@ def make_pdf(text: str) -> bytes:
     return data
 
 
+def make_top_right_question_pdf() -> bytes:
+    """Sağ sütunda y=61-də başlayan sual HEADER_BAND kəsiminə düşməməlidir."""
+    import pymupdf
+
+    document = pymupdf.open()
+    page = document.new_page(width=595, height=842)
+    page.insert_text((40, 90), "1. Sol sual hansidir?", fontsize=11)
+    page.insert_text((50, 120), "A) a", fontsize=11)
+    page.insert_text((50, 140), "B) b", fontsize=11)
+    page.insert_text((50, 160), "C) c", fontsize=11)
+    page.insert_text((50, 180), "D) d", fontsize=11)
+    page.insert_text((320, 61), "7. Sag sual hansidir?", fontsize=11)
+    page.insert_text((330, 90), "A) x", fontsize=11)
+    page.insert_text((330, 110), "B) y", fontsize=11)
+    page.insert_text((330, 130), "C) z", fontsize=11)
+    page.insert_text((330, 150), "D) w", fontsize=11)
+    data = document.tobytes()
+    document.close()
+    return data
+
+
 def make_scrambled_twocolumn_pdf() -> bytes:
     """İki sütun + 2x2 variant toru; PDF-də əvvəl aşağıdakı sual çəkilir."""
     import pymupdf
@@ -262,6 +283,68 @@ E) beş
         self.assertEqual(fourth["choices"][0]["text"], "-ci")
         self.assertEqual(fourth["choices"][1]["text"], "-in")
 
+    def test_low_header_question_is_not_clipped(self):
+        questions = parse_questions(extract_pdf_text(make_top_right_question_pdf()))
+        numbers = [item["number"] for item in questions]
+        self.assertIn(1, numbers)
+        self.assertIn(7, numbers)
+        sag = next(item for item in questions if item["number"] == 7)
+        self.assertIn("Sag sual", sag["text"])
+        self.assertEqual([choice["letter"] for choice in sag["choices"]], list("ABCD"))
+
+    def test_overlapping_section_numbers_continue_sequentially(self):
+        text = (
+            "50. Choose the INCORRECT sentence.\n"
+            "A) one\nB) two\nC) three\nD) four\n"
+            "41. Glasnye bukvy\n"
+            "A) e\nB) b\nC) o\nD) u\n"
+            "42. Slova\n"
+            "A) volk\nB) leto\nC) dom\nD) kot\n"
+        )
+        questions = parse_questions(text)
+        self.assertEqual([item["number"] for item in questions], [50, 51, 52])
+        self.assertIn("Glasnye", questions[1]["text"])
+        self.assertIn("Slova", questions[2]["text"])
+
+    def test_stray_column_letter_does_not_eat_choice_a(self):
+        text = (
+            "7. Hansı sözdə sait səs uzanır?\n"
+            "SİNA) çovğun\n"
+            "B) zavod\n"
+            "C) lövbər\n"
+            "D) qanun\n"
+        )
+        questions = parse_questions(text)
+        self.assertEqual([choice["letter"] for choice in questions[0]["choices"]], list("ABCD"))
+        self.assertEqual(questions[0]["choices"][0]["text"], "çovğun")
+        self.assertNotIn("SİNA)", questions[0]["text"])
+
+    def test_passage_instruction_is_not_left_in_previous_choice(self):
+        text = (
+            "11. Hansı sözdə k fərqlidir?\n"
+            "A) hakim\nB) çiçək\nC) kirpi\nD) körpü\n"
+            "Mətnə əsasən 12 15 nömrəli tapşırıqları yerinə yetirin. Yerdən Günəşə qədər.\n"
+            "12. Mətndə hansı suala cavab yoxdur?\n"
+            "A) bir\nB) iki\nC) üç\nD) dörd\n"
+        )
+        questions = parse_questions(text)
+        self.assertEqual([item["number"] for item in questions], [11, 12])
+        self.assertFalse(any("Mətnə" in choice["text"] for choice in questions[0]["choices"]))
+        self.assertFalse(any("Günəşə" in choice["text"] for choice in questions[0]["choices"]))
+        self.assertIn("Mətnə əsasən", questions[1]["text"])
+        self.assertIn("Günəşə", questions[1]["text"])
+
+    def test_header_fragment_is_stripped_from_choice(self):
+        text = (
+            "3. Hansı bənd doğru deyil?\n"
+            "A) vətən\nB) ətir\nC) bulud\nD) günəş can dili\n"
+            "4. Növbəti sual\n"
+            "A) bir\nB) iki\nC) üç\nD) dörd iyyat\n"
+        )
+        questions = parse_questions(text)
+        self.assertEqual(questions[0]["choices"][3]["text"], "günəş")
+        self.assertEqual(questions[1]["choices"][3]["text"], "dörd")
+
 
 class AnswerKeyTests(TestCase):
     def test_comma_separated_key(self):
@@ -323,6 +406,36 @@ class ImportExamTests(TestCase):
         self.assertEqual(Question.objects.filter(exam=exam).count(), 1)
         self.assertEqual(Question.objects.get(exam=exam).text, "Yeni sual?")
         self.assertEqual(Choice.objects.filter(question__exam=exam, is_correct=True).count(), 0)
+
+    def test_manual_question_can_be_added_after_pdf_import(self):
+        exam = Exam.objects.create(title="PDF sonra əl")
+        upload = SimpleUploadedFile("a.pdf", make_pdf(SAMPLE_TEXT), content_type="application/pdf")
+        import_exam_from_pdf(exam, upload)
+        self.assertEqual(Question.objects.filter(exam=exam).count(), 3)
+
+        admin = get_user_model().objects.create_superuser("adminpdf", "ap@test.local", "adminpass")
+        client = self.client
+        client.force_login(admin)
+        response = client.post(
+            f"/panel/exams/{exam.pk}/questions/new/",
+            {
+                "number": "4",
+                "text": "PDF-dən sonra əl ilə",
+                "choices-TOTAL_FORMS": "5",
+                "choices-INITIAL_FORMS": "0",
+                "choices-MIN_NUM_FORMS": "0",
+                "choices-MAX_NUM_FORMS": "5",
+                "choices-0-letter": "A",
+                "choices-0-text": "bir",
+                "choices-1-letter": "B",
+                "choices-1-text": "iki",
+            },
+        )
+        self.assertRedirects(response, f"/panel/exams/{exam.pk}/#suallar")
+        self.assertEqual(Question.objects.filter(exam=exam).count(), 4)
+        extra = Question.objects.get(exam=exam, number=4)
+        self.assertEqual(extra.text, "PDF-dən sonra əl ilə")
+        self.assertTrue(Question.objects.filter(exam=exam, number=1).exists())
 
 
 class MediaUrlTests(TestCase):
@@ -746,6 +859,20 @@ class ScoringRuleTests(TestCase):
         self.assertEqual(maximum, 13)
         self.assertEqual(percent, round(10 / 13 * 100, 2))
 
+    def test_star_answer_any_choice_is_correct_blank_is_not(self):
+        from exams.services.scoring import correct_letter, score_answers
+
+        Choice.objects.filter(question=self.q2).update(is_correct=True)
+        Choice.objects.create(question=self.q2, letter="B", text="b", is_correct=True)
+        Choice.objects.create(question=self.q2, letter="C", text="c", is_correct=True)
+        self.assertEqual(correct_letter(self.q2), "*")
+        pick_c = self.q2.choices.get(letter="C")
+        earned, maximum, _percent = score_answers([self.q2], {self.q2.pk: pick_c})
+        self.assertEqual(earned, 3)
+        self.assertEqual(maximum, 3)
+        earned_blank, _, _ = score_answers([self.q2], {self.q2.pk: None})
+        self.assertEqual(earned_blank, 0)
+
     def test_warns_when_no_points_anywhere(self):
         from exams.services.scoring import question_warnings
 
@@ -812,6 +939,35 @@ class ExamSettingsAndMarkingTests(TestCase):
         self.assertFalse(self.choice_a.is_correct)
         self.assertTrue(self.choice_b.is_correct)
         self.assertEqual(self.question.points, 7)
+
+    def test_star_answers_option_accepts_any_selected_choice(self):
+        response = self.client.post(
+            f"/panel/exams/{self.exam.pk}/marking/",
+            {
+                f"correct_{self.question.pk}": "*",
+                f"points_{self.question.pk}": "5",
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        self.choice_a.refresh_from_db()
+        self.choice_b.refresh_from_db()
+        self.assertTrue(self.choice_a.is_correct)
+        self.assertTrue(self.choice_b.is_correct)
+        page = self.client.get(f"/panel/exams/{self.exam.pk}/")
+        self.assertContains(page, "* cavablar")
+        self.assertContains(page, 'value="*"')
+        self.assertRegex(page.content.decode(), r'<option value="\*"[^>]*selected')
+
+        student = complete_student("ulduzci", phone="+994509998877")
+        self.client.force_login(student)
+        submit = self.client.post(
+            f"/exams/{self.exam.pk}/",
+            {f"q_{self.question.pk}": str(self.choice_a.pk)},
+        )
+        self.assertEqual(submit.status_code, 302)
+        submission = student.exam_submissions.get(exam=self.exam)
+        self.assertEqual(float(submission.score), 100.0)
+        self.assertEqual(submission.earned_points, 5)
 
     def test_assign_subject_per_question_and_range(self):
         math = Subject.objects.get(name="Riyaziyyat")
@@ -927,6 +1083,42 @@ class RegistrationAndProfileTests(TestCase):
         self.assertEqual(user.profile.grade, 5)
         self.assertEqual(user.profile.first_name, "Nuray")
         self.assertTrue(user.profile.code)
+
+    def test_register_allows_simple_four_character_password(self):
+        response = self.client.post(
+            "/accounts/register/",
+            {
+                "username": "sadesifre",
+                "first_name": "Nuray",
+                "last_name": "Bağırsoy",
+                "password1": "test",
+                "password2": "test",
+                "phone": "050 333 44 55",
+                "grade": "5",
+                "region": "Bakı",
+                "baku_district": "Yasamal",
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(get_user_model().objects.filter(username="sadesifre").exists())
+
+    def test_register_rejects_password_shorter_than_four(self):
+        response = self.client.post(
+            "/accounts/register/",
+            {
+                "username": "qisasifre",
+                "first_name": "Nuray",
+                "last_name": "Bağırsoy",
+                "password1": "abc",
+                "password2": "abc",
+                "phone": "050 333 44 66",
+                "grade": "5",
+                "region": "Bakı",
+                "baku_district": "Yasamal",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(get_user_model().objects.filter(username="qisasifre").exists())
 
     def test_register_other_region_requires_address(self):
         response = self.client.post(

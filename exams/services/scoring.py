@@ -14,7 +14,15 @@ def has_correct_answer(question) -> bool:
     return any(choice.is_correct for choice in question.choices.all())
 
 
+def accepts_any_answer(question) -> bool:
+    """Bütün variantlar düzgün işarələnibsə şagirdin seçimi qəbul olunur."""
+    choices = list(question.choices.all())
+    return len(choices) > 1 and all(choice.is_correct for choice in choices)
+
+
 def correct_letter(question) -> str:
+    if accepts_any_answer(question):
+        return "*"
     for choice in question.choices.all():
         if choice.is_correct:
             return choice.letter

@@ -36,6 +36,7 @@
   <div class="form-row">
     <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
     {{ form.password1 }}{{ form.password1.errors }}
+    {% if form.password1.help_text %}<p class="help">{{ form.password1.help_text }}</p>{% endif %}
   </div>
   <div class="form-row">
     <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>

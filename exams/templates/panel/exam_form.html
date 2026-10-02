@@ -79,7 +79,7 @@
       <span class="step-num">3</span>
       <div>
         <h2>PDF-dən idxal (istəyə bağlı)</h2>
-        <p class="help">Boş buraxıb sualları özünüz yaza bilərsiniz. Yükləsəniz hər sual 1. / Sual 1: formatında, variantlar A) B) C) D) E) olmalıdır.</p>
+        <p class="help">Boş buraxıb sualları özünüz yaza bilərsiniz. PDF yükləsəniz suallar çıxarılır; sonra eyni imtahana «Sual əlavə et» ilə də sual yaza bilərsiniz. Yükləsəniz hər sual 1. / Sual 1: formatında, variantlar A) B) C) D) E) olmalıdır.</p>
       </div>
     </div>
     {{ form.pdf_file }}{{ form.pdf_file.errors }}
@@ -110,7 +110,7 @@
       <span class="step-num">4</span>
       <div>
         <h2>Suallar</h2>
-        <p class="help">{{ questions|length }} sual · özünüz əlavə edin və ya PDF idxal edin · düzgün cavabı hər sual üçün seçib saxlayın · ümumi bal: {% if exam.default_points %}{{ exam.default_points }}{% else %}təyin olunmayıb{% endif %}</p>
+        <p class="help">{{ questions|length }} sual · PDF-dən sonra da özünüz əlavə edin · düzgün cavabı hər sual üçün seçib saxlayın · ümumi bal: {% if exam.default_points %}{{ exam.default_points }}{% else %}təyin olunmayıb{% endif %}</p>
       </div>
     </div>
     <p style="margin:0 0 12px">
@@ -169,6 +169,7 @@
               {% for choice in question.choices.all %}
                 <option value="{{ choice.letter }}" {% if item.correct == choice.letter %}selected{% endif %}>{{ choice.letter }}{% if choice.text %} — {{ choice.text|truncatechars:40 }}{% endif %}</option>
               {% endfor %}
+              <option value="*" {% if item.correct == "*" %}selected{% endif %}>* cavablar</option>
             </select>
           </label>
           <label>

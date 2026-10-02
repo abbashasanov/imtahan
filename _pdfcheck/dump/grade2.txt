@@ -1,0 +1,222 @@
+raw_starts=31 ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']...['24', '26', '27', '28', '29', '30', '43', '45']
+parsed=31 numbers=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 43, 45]
+missing=[25, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 44]
+last=45
+
+===== Q1 n=4 ABCD =====
+‌Hansı sözün izahı düzgün verilməyib‌?‌
+  A) ‌ ‌Büllur‌ - xüsusi parlaqlığı olan şüşə‌
+  B) ‌ ‌Tilov‌ - balıq tutmaq üçün istifadə olunan əşya‌
+  C) ‌ ‌Akvarel‌ - su heyvanlarını saxlamaq üçün şüşə qab‌
+  D) ‌Cığır‌ - ensiz, dar yol‌
+
+===== Q2 n=4 ABCD =====
+‌Şəkli verilmiş sözün saitləri haqqında hansı fikir doğrudur?‌
+  A) ‌ İncə saitlərdir.‌ ‌
+  B) ‌ Qalın saitlərdir.‌ ‌
+  C) ‌ Dodaqlanan saitlərdir.‌
+  D) ‌Qapalı saitlərdir.‌
+
+===== Q3 n=4 ABCD =====
+‌Verilmiş şeirdə tərkibində‌ ‌həm incə, həm də qalın sait olan neçə söz var?‌ ‌ Bir dön bizim Bakıya bax,‌ Sahilləri çıraq-çıraq!‌ Buruqları hayqıraraq,‌ Nərə salır boz çöllərə,‌ İşıqlanır hər dağ dərə.‌ Səməd Vurğun‌
+  A) ‌ ‌2‌
+  B) ‌ ‌1‌
+  C) ‌ ‌3‌
+  D) ‌ ‌4‌ can dili‌
+
+===== Q4 n=4 ABCD =====
+‌Verilən sözlərə uyğun gələn ümumi məna bildirən söz hansıdır?‌ sərçə, qaranquş, göyərçin‌
+  A) ‌ ‌meyvə‌
+  B) ‌ ‌quş‌
+  C) ‌ ‌heyvan‌
+  D) ‌ ‌gül‌
+
+===== Q5 n=4 ABCD =====
+‌Boşluğa uyğun gələn hərflər hansılardır?‌ qəhr..man,‌ ‌həf..ə,‌ ‌n..rdivan‌
+  A) ‌ ‌ə, d, a‌
+  B) ‌ ‌ə, t, ə‌
+  C) ‌ ‌a, t, ə‌
+  D) ‌ ‌ə, d, ə‌
+
+===== Q6 n=4 ABCD =====
+‌Hansı cümlənin tərkibində ‌yalnız‌ incə saitlərdən ibarət olan sözlər var?‌
+  A) ‌ Dəniz dalğalarını sahilə vururdu.‌
+  B) ‌ Pəri və Dəniz səhər meşəyə gəzməyə getdilər.‌
+  C) ‌ Günəş səmadan boylanmışdı.‌
+  D) ‌Baba uşaqları parka apardı.‌
+
+===== Q7 n=4 ABCD =====
+‌Ahəng qanununa görə sözlərdən hansı‌ ‌fərqlidir‌?‌
+  A) ‌ ‌müsabiqə‌
+  B) ‌ ‌qəhrəman‌
+  C) ‌ ‌hiyləgər‌
+  D) ‌ ‌cəsarətlə‌ 1‌
+
+===== Q8 n=4 ABCD =====
+‌Hansı sözün tərkibindəki incə saiti qalın saitlə əvəz etdikdə alınan sözün ümumi mənası bitki olar?‌
+  A) ‌ ‌yol‌
+  B) ‌ ‌baş‌
+  C) ‌nənə‌ ‌
+  D) ‌ ‌fal‌
+
+===== Q9 n=4 ABCD =====
+‌Hansı cümlədə altından xətt çəkilmiş sözün tərkibində həm incə, həm də dodaqlanan saitlər var?‌
+  A) ‌ Çoban quzuları yaylağa apardı.‌
+  B) ‌ Fil dəvədən böyükdür.‌
+  C) ‌ Sözün düzünü zarafatla deyərlər.‌
+  D) ‌Gecələr ay ilə ulduzlar işıq saçır.‌
+
+===== Q10 n=4 ABCD =====
+‌Ahəng qanuna əsasən “?” işarəsinin yerinə uyğun gələn söz hansıdır?‌ kitab‌ dünya‌ limon‌ ?‌
+  A) ‌ ‌polis‌
+  B) ‌ ‌soyuq‌
+  C) ‌ ‌tülkü‌
+  D) ‌ ‌ördək‌ Mətnə əsasən 11-15-ci sualları‌ ‌cavablandırın.‌ ‌Aynur səhər tezdən oyandı və həyətə çıxdı. O, sevimli pişiyi Məstanı axtardı. Am
+
+===== Q11 n=4 ABCD =====
+‌Məntə əsasən baş qəhrəmanın pişiyinin adı nə idi?‌
+  A) ‌ Toplan‌
+  B) ‌ Məstan‌
+  C) ‌ Bella‌
+  D) ‌ Mimi‌ 2‌
+
+===== Q12 n=4 ABCD =====
+‌Mətnə əsasən Aynur Məstanı harada gördü?‌
+  A) ‌ Kolun arxasında‌ ‌
+  B) ‌ Ağacın budağında‌
+  C) ‌ İşığın üstündə‌
+  D) ‌Qutunun altında‌
+
+===== Q13 n=4 ABCD =====
+‌Mətndəki hadisə nə vaxt baş verir?‌
+  A) ‌ səhər‌
+  B) ‌ axşam‌
+  C) ‌ günorta‌
+  D) ‌ gecə‌
+
+===== Q14 n=4 ABCD =====
+‌Mətnin əsas ideyası nədir?‌
+  A) ‌ Aynur Məstanı axtarmaq istəmirdi.‌
+  B) ‌ Heyvanlara qayğı göstərmək lazımdır.‌
+  C) ‌ Aynur səhər tezdən parka getməyi xoşlayır.‌
+  D) ‌Məstan parkda oynamağı çox sevirdi.‌
+
+===== Q15 n=4 ABCD =====
+‌Hekayə xəritəsinə əsasən mətndə hansı bənd ‌yoxdur‌?‌
+  A) ‌ Məkan‌
+  B) ‌ Baş qəhrəman‌
+  C) ‌ Zaman‌
+  D) ‌Köməkçi obraz‌ 3‌ Riyaz
+
+===== Q16 n=4 ABCD =====
+‌Modellə verilmiş ədədlərdən hansı digərlərindən böyükdür?‌
+  A) ‌
+  B) ‌
+  C) ‌
+  D) ‌
+
+===== Q17 n=4 ABCD =====
+‌Ədəd oxunda‌ ‌ilə verilmiş ədəd neçədir?‌ 22‌ 26‌
+  A) ‌ İki onluq doqquz təklik‌
+  B) ‌ Doqquz onluq iki təklik‌
+  C) ‌ İki onluq səkkiz təklik‌
+  D) ‌Səkkiz onluq iki təklik‌
+
+===== Q18 n=4 ABCD =====
+‌Ardıcıllığın 2 və 3-cü elementinin cəmi neçə olar?‌ , ... ,‌ ... ,‌ , .‌
+  A) ‌ 65‌
+  B) ‌ 68‌
+  C) ‌ 66‌
+  D) ‌ 72‌ iyyat‌
+
+===== Q19 n=4 ABCD =====
+‌Ədəd üçlüyündə “?” ?‌ işarəsinin yerinə yazılmalı olan ədəd haqqında hansı 40‌ 8‌ fikir ‌səhvdir‌?‌
+  A) ‌ Ədədin onluqlar mərtəbəsindəki rəqəm 4-dür.‌
+  B) ‌ Ədədin rəqəmləri cəmi 12-dir.‌
+  C) ‌ Ədədin təkliklər mərtəbə qiyməti 8- dir.‌
+  D) ‌Ədədin təkliklər mərtəbəsini 2 vahid azaltsaq, yeni ədəd 45 olar.‌
+
+===== Q20 n=4 ABCD =====
+‌Bağdakı çəhrayı güllərin sayı 18, sarı güllərin sayı 22, narıncı güllərin sayı 2 onluğa, qırmızı güllərin sayı isə 1 onluq 5 təkliyə bərabərdir. Hansı rəngdə olan güllərin sayı çoxdur?‌
+  A) ‌ çəhrayı‌
+  B) ‌ sarı‌
+  C) ‌ qırmızı‌
+  D) ‌ narıncı‌
+
+===== Q21 n=4 ABCD =====
+‌Verilmiş şərti ödəyən neçə ədəd var?‌ 28 < A < 40‌
+  A) ‌ 14‌
+  B) ‌9‌
+  C) ‌ 12‌
+  D) ‌11‌ 4‌
+
+===== Q22 n=4 ABCD =====
+‌Tərəzinin gözlərini bərabərləşdirmək üçün birinci gözə neçə kub əlavə etmək lazımdır?‌
+  A) ‌ 12‌
+  B) ‌ 9‌
+  C) ‌ 11‌
+  D) ‌ 8‌
+
+===== Q23 n=4 ABCD =====
+‌Verilmiş ədədlər hansı bənddə artan sıra ilə düzülüb?‌ 38‌ 82‌ 64‌ 22‌
+  A) ‌
+  B) ‌ ,‌ ,‌ ,‌ ,‌ ,‌ ,‌
+  C) ‌ ,‌ ,‌ ,‌
+  D) ‌ ,‌ ,‌ ,‌
+
+===== Q24 n=4 ABCD =====
+‌5 onluq 4 təklik ədədini 1 onluq 1 təklik qədər artırsaq, hansı cavab alınar?
+  A) ‌ 7 onluq 5 təklik‌
+  B) ‌ 7 onluq 8 təklik‌
+  C) ‌ 6 onluq 5 təklik‌
+  D) ‌7 onluq 3 təklik‌ 25.‌ ‌ Fikrimdə tutduğum ədədin onluğu ən böyük birrəqəmli ədəddən 3 vahid kiçik, təkliyi isə 3-ün ikiqatına bərabərdir. 
+
+===== Q26 n=4 ABCD =====
+‌Anamın 30 yaşı var. Atamın yaşı isə anamın yaşından 7 yaş çoxdur. Atamın yaşı neçə olar?‌
+  A) ‌
+  B) ‌
+  C) ‌
+  D) ‌
+
+===== Q27 n=4 ABCD =====
+‌Verilən misallardan hansının nəticəsi digərlərindən ‌kiçikdir‌?‌
+  A) ‌ 1 4‌
+  B) ‌ 2 1‌ +‌ +‌ 3 2‌ 4 3‌
+  C) ‌
+  D) ‌ 1 0‌ 4 5‌ +‌ +‌ 4 6‌ 1 2‌ 5‌
+
+===== Q28 n=4 ABCD =====
+‌Cəm hansı 100-lük kartda‌ ‌ilə göstərilmişdir?‌ 27 + 42‌
+  A) ‌
+  B) ‌ 46‌ 77‌
+  C) ‌
+  D) ‌ 58‌ 54‌
+
+===== Q29 n=4 ABCD =====
+‌Cavabları eyni olan misalları qarşılaşdırsaq, hansı bənd doğru olar?‌ 35 + 10‌ 67 + 10‌ 52 + 25‌ 24 + 35‌ 23 + 36‌ 22 + 23‌
+  A) ‌
+  B) ‌
+  C) ‌
+  D) ‌
+
+===== Q30 n=4 ABCD =====
+‌4 onluq 5 təklikdən başlayaraq 5-5 artan sıra ilə saysam, hansı ədədi söyləmərəm‌?‌
+  A) ‌ 50‌
+  B) ‌ 62‌
+  C) ‌ 65‌
+  D) ‌ 70‌ 6‌ Həyat bilgisi‌ 31.‌ ‌Məktəb daxilində şagirdlər hansı 34.‌ ‌Atanızın qardaşı sizin _______ .‌ qaydaya əməl etməlidirlər?‌ Cümləsini
+
+===== Q43 n=4 ABCD =====
+‌Hecaları qarışıq verilmiş sözləri düzəldin və fərqli olanı tapın.‌
+  A) ‌
+  B) ‌ mon-li‌ ma-al‌
+  C) ‌ mud-ar‌
+  D) ‌ yar-xi‌ ntiq‌ 44.‌ ‌ 9‌ +‌ +‌ = ‌?‌ 4‌7‌
+
+===== Q45 n=4 ABCD =====
+‌Samir, Rauf və Turanın boyları fərqli uzunluqdadır. Samir Raufdan hündür, Rauf isə Turandan hündürdür. Ən hündürboylu uşaq kimdir?‌
+  A) Samir
+  B) Turan
+  C) Rauf
+  D) heç biri 46.‌ ?‌
+

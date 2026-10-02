@@ -138,9 +138,13 @@ class PanelExamForm(forms.ModelForm):
         self.fields["pdf_file"].label = "PDF faylı (istəyə bağlı)"
         self.fields["pdf_file"].help_text = (
             "Yükləsəniz suallar avtomatik çıxarılır. "
-            "İstəməsəniz imtahanı saxlayıb sualları özünüz yazın."
+            "PDF-dən sonra eyni imtahana əl ilə də sual əlavə edə bilərsiniz. "
+            "Yenidən idxal mövcud sualları (əl ilə yazılanlar daxil) silər."
         )
         if self.instance.pk:
+            self.fields["parse_pdf"].label = (
+                "PDF-i yenidən parse et (əl ilə əlavə edilən suallar da silinəcək)"
+            )
             for name in ("opens_at", "closes_at"):
                 value = getattr(self.instance, name)
                 if value:
@@ -230,7 +234,12 @@ class StudentRegistrationForm(PhoneDistrictMixin, forms.Form):
     region = forms.ChoiceField(label="Şəhər / bölgə")
     baku_district = forms.ChoiceField(label="Bakı rayonu", required=False)
     address = forms.CharField(label="Ünvan", required=False, max_length=255)
-    password1 = forms.CharField(label="Şifrə", widget=forms.PasswordInput)
+    password1 = forms.CharField(
+        label="Şifrə",
+        min_length=4,
+        widget=forms.PasswordInput,
+        help_text="Ən azı 4 simvol. İstənilən şifrə ola bilər.",
+    )
     password2 = forms.CharField(label="Şifrənin təkrarı", widget=forms.PasswordInput)
 
     def __init__(self, *args, **kwargs):
@@ -250,11 +259,9 @@ class StudentRegistrationForm(PhoneDistrictMixin, forms.Form):
         return username
 
     def clean_password1(self):
-        from django.contrib.auth.password_validation import validate_password
-
-        password = self.cleaned_data.get("password1")
-        if password:
-            validate_password(password)
+        password = self.cleaned_data.get("password1") or ""
+        if len(password) < 4:
+            raise forms.ValidationError("Şifrə ən azı 4 simvol olmalıdır.")
         return password
 
     def clean_grade(self):

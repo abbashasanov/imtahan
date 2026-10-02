@@ -23,6 +23,7 @@ from exams.models import Certificate, Choice, Exam, ExamSubmission, Question, Su
 from exams.regions import BAKU, GRADE_CHOICES, grade_label
 from exams.services.scoring import (
     answer_sheet_payload,
+    correct_letter,
     effective_points,
     question_warnings,
     ranked_submissions,
@@ -45,10 +46,9 @@ def staff_required(view):
 
 def _save_exam_from_form(form, parse_requested=False):
     exam = form.save()
-    pdf_file = form.cleaned_data.get("pdf_file")
     parse_pdf = parse_requested or form.cleaned_data.get("parse_pdf")
     stats = None
-    if (parse_pdf or (pdf_file and "pdf_file" in form.changed_data)) and exam.pdf_file:
+    if parse_pdf and exam.pdf_file:
         stats = import_exam_from_pdf(exam, exam.pdf_file)
     return exam, stats
 
@@ -163,11 +163,10 @@ def exam_detail(request, pk):
     questions = exam.questions.select_related("subject").prefetch_related("choices")
     marked_questions = []
     for question in questions:
-        correct = next((choice.letter for choice in question.choices.all() if choice.is_correct), "")
         marked_questions.append(
             {
                 "question": question,
-                "correct": correct,
+                "correct": correct_letter(question),
                 "effective_points": effective_points(question),
                 "warnings": question_warnings(question),
             }
@@ -328,7 +327,9 @@ def exam_marking(request, pk):
         if not ok:
             messages.error(request, f"Sual {question.number}: fənn tapılmadı.")
             return redirect(f"{reverse('panel_exam_detail', args=[exam.pk])}#suallar")
-        if letter in dict(Choice.LETTERS):
+        if letter == "*":
+            question.choices.update(is_correct=True)
+        elif letter in dict(Choice.LETTERS):
             question.choices.update(is_correct=False)
             question.choices.filter(letter=letter).update(is_correct=True)
         elif letter == "":

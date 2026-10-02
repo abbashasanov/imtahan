@@ -1,0 +1,415 @@
+count=59 numbers=[1, 2, 3, 4, 5, 6, 9, 11, 15, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 50, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106]
+
+===== Q1 ABCD =====
+Neçə sözün yazılışı və deyilişi fərqlidir? qüllə, tappıltı, şənbə, qələm, bulud, fəvvarə, pambıq
+  A) 
+  B) 
+  C) 
+  D) 
+
+===== Q2 ABCD =====
+Hansı cümlədə qoşasamitli söz düzgün yazılıb?
+  A) O, öz təxəyülünə uyğun şəkillər çəkir.
+  B) Hərflər əlifbada müəyən ardıcıllıqla düzülüb.
+  C) Əlbəttə, hər tamaşa gözəldir.
+  D) Sevincimin hətdi-hüdudu yoxdur.
+
+===== Q3 ABCD =====
+Hansı bənddə boşluqlara eyni hərf yazılmalıdır?
+  A) m...barək
+  B) müd...r üf...q n...mayiş
+  C) t...başir
+  D) b...növrə həş...rat üm...d can dili
+
+===== Q4 ABCD =====
+Şəkli verilmiş frazeoloji birləşməni hansı feil ilə əvəz etmək olar?
+  A) dinləmək
+  B) şübhələnmək
+  C) baxmaq
+  D) gözləmək
+
+===== Q5 ABCD =====
+Tələffüz zamanı səsartımının baş verdiyi söz hansıdır?
+  A) 
+  B) müdir səadət
+  C) 
+  D) təbiət müalicə
+
+===== Q6 ABCD =====
+Hansı cümlədə altından xətt çəkilmiş birləşmə frazeoloji birləşmə deyil?
+  A) Vüqar ağzına su alıb oturmuşdu.
+  B) Rayona getmək üçün səhər yola düşməliyik?
+  C) O, qorxudan özünü itirdi.
+  D) Şagirdlər ev tapşırıqlarını qeyd etdilər. 1
+
+===== Q9 ABCD =====
+ehtiyat 6. zənbil
+  A) 1, 2, 6
+  B) 1, 3, 5
+  C) 2, 4, 5
+  D) 2, 3, 5 8. “Elan” haqqında verilən fikirlərdən neçəsi doğru, neçəsi səhvdir?
+
+===== Q11 ABCD =====
+Tədbirin keçirələcəyi yer dəqiq göstərilməyə bilər.
+  A) 
+  B) 2 3 1 4
+  C) 
+  D) 3 2 4 1
+
+===== Q15 ABCD =====
+Ağzı qıfıllanmaq - susmaq - titrəmək - inanmaq - bacarmaq
+  A) 1- , 2- , 3- , 4-
+  B) 1- , 2- , 3- , 4-
+  C) 1- , 2- , 3- , 4-
+  D) 1- , 2- , 3- , 4-
+
+===== Q21 ABCD =====
+Hansı cümlədə səhv yazılmış söz . var?
+  A) Meşədə gəzərkən konpas bizə çox kömək olur.
+  B) Təbiətin sirləri hələ də tam açılmayıb.
+  C) Meşədə tez-tez dovşanlara rast gəlmək mümkündür.
+  D) Ovçu qanadları gözəl olan quşu ovlamadı. 2 Mətnə əsasən 11-15-ci sualları cavablandırın.
+
+===== Q22 ABCD =====
+Mətnə əsasən iynəyarpaqlı ağaclara Ağaclar çox gözəl və faydalı bitkilərdir. aid olan fikir hansıdır?Onlar bir çox canlılar üçün yaşayış məskənidir. Quşlar, sincablar və bəzi
+  A) Yalnız meyvə verir. böcəklər ağaclarda yuva qurur. Hər bir
+  B) Yarpaqları geniş və yastı olur. ağac əsasən kök, gövdə, budaq və
+  C) Yarpaqları payızda tökülür. yarpaqdan ibarətdir. Ağacların gövdələri
+  D) Həmişəyaşıl və iynə formalı yarpaqları hündür və odunlaşmış olur, gövdə olur. budaqlanaraq çətir əmə
+
+===== Q23 ABCD =====
+Mətndən hansı nəticəni çıxarmaq Ağaclar atmosferin çirklənməsinin olar?qarşısını alır. Onlar havanı işlənmiş
+  A) İynəyarpaqlı ağaclar təbiətimiz üçünqazlardan təmizləyir. Ağaclar yarpaqlarının quruluşuna görə çox 
+  B) Ağaclar həyat üçün çox vacibdir, onları iynəyarpaqlılar. İynəyarpaqlı ağaclara qorumaq hər birimizin
+  C) Enliyarpaqlı ağacların yarpaqları həmişəyaşıl ağaclardır. Enliyarpaqlı payızda rəngini dəyişmir və t
+  D) Meyvə ağacları əsasən meşələrdə ağcaqayın və başqa ağaclar aiddir. Bu əkilir. ağacların yarpaqları y
+
+===== Q25 ABCD =====
+Mətnin əsas başlığı hansı bənd olar?
+  A) Ağaclara qulluq
+  B) İynəyarpaqlı ağaclar
+  C) Ağaclar və onların faydaları
+  D) Ağacların növləri
+
+===== Q26 ABCD =====
+Mətni hansı cümlə ilə tamamlamaq olar?
+  A) Beləliklə, ağaclar həm təbiət üçün, həm də insanlar üçün çox faydalı bitkilərdir.
+  B) Beləliklə, ağaclar yalnız yarpaqlarına görə əhəmiyyətlidir.
+  C) Beləliklə, insanlar ağacları qorumalıdırlar.
+  D) Beləliklə, ağaclar dünyamızı gözəlləşdirən bitkilərdir. 4 Riyaz
+
+===== Q27 ABCD =====
+31 502 ədədinin oxunuşu hansı bənddə düzgün verilib?
+  A) Otuz bir min beş sıfır iki
+  B) Otuz bir beş yüz iki
+  C) Otuz bir min beş yüz iki
+  D) Beş yüz iki min otuz bir
+
+===== Q28 ABCD =====
+Təkliklər sinfindəki rəqəmlərin cəmi 12, minliklər sinfindəki rəqəmlərin cəmi 1 olan ədəd hansıdır?
+  A) 443 639
+  B) 452 643
+  C) 325 552
+  D) 125 634
+
+===== Q29 ABCD =====
+A > 2 642 müqayisəsində A-nın yerin yazıla biləcək ən kiçik ədədi minliklərə qədər yuvarlaqlaşdırsaq, hansı ədəd alınar?
+  A) 3 000
+  B) 2 700
+  C) 3 100
+  D) 2 750 iyyat
+
+===== Q30 ABCD =====
+24 510 ədədini yüzlüklərə və on- minliklərə qədər yuvarlaqlaşdırıb toplasaq, cəm neçə olar?
+  A) 45 500
+  B) 40 000
+  C) 42 500
+  D) 44 500
+
+===== Q31 ABCD =====
+Onluqlar mərtəbə vahidlərinin sayı minliklər mərtəbə vahidlərinin sayından0 3 vahid az olan ən böyük dördrəqəmli ədəd neçədir?
+  A) 9 969
+  B) 9 569
+  C) 9 989
+  D) 9 699
+
+===== Q32 ABCD =====
+Ədədlər altından xətt çəkilmiş hissəyə qədər yuvarlaqlaşdırılıb. Hansı bənd doğru deyil?
+  A) 3256 ≈ 3300
+  B) 47 892 ≈ 50 000
+  C) 12 037 ≈ 10 000
+  D) 658 004 ≈ 660 000 5
+
+===== Q33 ABCD =====
+Hansı cəm doğru deyil?
+  A) 
+  B) 14 310 42 184 + + 3 245 28 620 17 555 70 804
+  C) 
+  D) 6 244 35 237 + + 5 815 17 005 12 159 52 242
+
+===== Q34 ABCD =====
+Modellə verilmiş ədədlərin fərqi neçəyə bərabərdir?
+  A) 21 143
+  B) 20 341
+  C) 20 431
+  D) 21 341
+
+===== Q35 ABCD =====
+A =5 251 olarsa, 13 400 - A ifadəsinin qiyməti neçə olar?
+  A) 8 149
+  B) 8 491
+  C) 8 194
+  D) 4 791
+
+===== Q36 CABD =====
+Ayselin şənbə və bazar günü atdığı addım sayısı cümə günü atdığı addım sayısından nə qədər çoxdur? sayı 12 200 Addım 11 650 11 100 10 550 10 000
+  C) a C Ş B Həftənin günləri
+  A) 13 500
+  B) 14 500
+  D) 12 500
+
+===== Q37 ABCD =====
+Ən böyük beşrəqəmli ədəd ilə 5, 2, 4, 7 rəqəmlərinin hər birindən bir dəfə istifadə etməklə düzəldilmiş ən böyük dördrəqəmli ədədin fərqi neçə olar?
+  A) 90 138
+  B) 92 457
+  C) 91 340
+  D) 94 357 6
+
+===== Q38 ABCD =====
+Ədəd oxunda verilmiş ədədin üzərinə 6 293 əlavə etsək, hansı ədəddən böyük olar? 3 211 3 322 3 766
+  A) 9 839
+  B) 9 782
+  C) 9 946
+  D) 9 923
+
+===== Q39 ABCD =====
+3 onminl. 2 minl. 5 onl. 4 təkl. ədədi ilə 23 329 ədədinin cəminə bərabər olan ədəd neçədir?
+  A) 55 835
+  B) 53 585
+  C) 58 535
+  D) 55 383
+
+===== Q40 ABCD =====
+Rəqəmləri müxtəlif olan ən böyük beşrəqəmli ədədin rəqəmləri cəmi neçədir?
+  A) 35
+  B) 42
+  C) 29
+  D) 33
+
+===== Q41 ABCD =====
+242A5 < 2B265 müqayisəsində A- nın ən böyük qiymətində B ən kiçik hansı qiyməti ala bilər?
+  A) 3
+  B) 4
+  C) 5
+  D) 6 7 Həyat
+
+===== Q42 ABCD =====
+Verilmiş cümlədə yerinə hansı orqanın adı yazılacaq? Elmdə əldə edilən nailiyyətlər, insanın şüurlu fəalliyyəti gedən proseslə nəticəsində baş verir.
+  A) 
+  B) 
+  C) 
+  D) 
+
+===== Q43 ABCD =====
+Hansı orqanlar qanın zərərli maddələrdən təmizlənməsində iştirak edir? qaraciyər göz böyrək ağciyər
+  A) 1, 3
+  B) 1, 2
+  C) 2, 4
+  D) 2, 3
+
+===== Q44 ABCD =====
+Dərman bitkiləri hansı bənddə verilib?
+  A) kəklikotu, pambıq, heyva
+  B) günəbaxan, qızılgül, nanə
+  C) nanə, kəklikotu, itburnu
+  D) nar, heyva, alma bilgisi
+
+===== Q45 ABCD =====
+Hansı bitki zəhərli bitkidir?
+  A) 
+  B) quşüzümü itburnu
+  C) 
+  D) zəfəran aloe
+
+===== Q46 ABCD =====
+Hansı bənddə mikroorqanizmin faydası haqqında məlumat verilməyib?
+  A) Dərman hazırlanır.
+  B) Süd məhsulları əldə edilir.
+  C) Qidanın həzm olunmasına kömək edir.
+  D) Qida maddələrini kiflədir.
+
+===== Q50 ABCD =====
+5. 6.
+  A) 4, 5,
+  B) 2, 6
+  C) 1, 2
+  D) 3, 4 8
+
+===== Q83 ABCD =====
+Hansı fikir səhvdir?
+  A) Mədə - qidanı həzm edir.
+  B) Ürək - Qanı oksigenlə zənginləşdirir.
+  C) Dəri - Bədəni zədələnmələrdən qoruyur.
+  D) Qaraciyər - Zəhərli maddələri zərərsizləşdirir.
+
+===== Q84 ABCD =====
+Hansı həşarat bitkilərdəki əkin sahələrinə ziyan vurur?
+  A) 
+  B) parabüzən qarışqa
+  C) çəyirtkə
+  D) əqrəb
+
+===== Q85 ABCD =====
+Bu bitkinin liflərindən avtomobil təkərlərinin, kəmərlərin istehsalında istifadə edilir. Bu bitki hansı bitkidir və hansı qrupa aid edilir?
+  A) Kaktus ; texniki bitkilər.
+  B) Pambıq ; texniki bitkilər.
+  C) Pambıq ; bəzək bitkilər.
+  D) Kalla ; bəzək bitkilər.
+
+===== Q86 ABCD =====
+Verilmiş fikirləri uyğunlaşdırın. 1. İpəkqurdu. 2. Milçəklər. 3. Zəlilər. a. Qurd xəstəliklərinin yayılmasına səbəb olur. b. Zəhərindən müalicəvi dərmanlar hazırlanır. c. Hazırladığı saplardan parçala
+  A) 1-a, 2-b, 3-c
+  B) 1-c, 2-b, 3-a
+  C) 1-b, 2-c, 3-a
+  D) 1-c, 2-a, 3-b 9 Mə
+
+===== Q87 ABCD =====
+a b 14 a b 72 112 14 112 = ?
+  A) 100
+  B) 81
+  C) 96
+  D) 64
+
+===== Q88 ABCD =====
+8 5 = 35 15 6 = 85 24 9 = 211 18 7 = ?
+  A) 157
+  B) 131
+  C) 121
+  D) 143
+
+===== Q89 ABCD =====
+Anaqramı həll edin.
+  A) 
+  B) file əlivəzk
+  C) ağblyaıc
+  D) ifsət ntiq
+
+===== Q90 ABCD =====
+5 7 4 2 + 2 2 0 4 7 0 9 6 + + = ?
+  A) 11
+  B) 13
+  C) 9
+  D) 10
+
+===== Q91 ABCD =====
+?
+  A) 
+  B) 
+  C) 
+  D) 10
+
+===== Q92 ABCD =====
+çoxbucaqlı - beşbucaqlı planet - ?
+  A) Merkuri
+  B) Ay
+  C) Kainat
+  D) Astroid
+
+===== Q93 ABCD =====
+246 48 375 105 269 ?
+  A) 98
+  B) 108
+  C) 105
+  D) 96
+
+===== Q94 ABCD =====
+Nağıl, şeir, hekayə və fənn kitabları dördrəfli şkafın fərqli rəflərindədir. 3-cü rəfdə nə nağıl, nə də şeir kitabları var. Fənn kitabları 2-ci rəfdədir. Nağıl kitabları ilk rəfdə deyil. Hekayə kitabl
+  A) 1-ci
+  B) 2-ci
+  C) 3-cü
+  D) 4-cü
+
+===== Q95 ABCD =====
+5 = 20 8 = 24 9 = 54 2 = ?
+  A) 158
+  B) 162
+  C) 156
+  D) 144
+
+===== Q96 ABCD =====
+DƏN - KİN - BİR - DAD - KƏNDİR = ?
+  A) 
+  B) 
+  C) 
+  D) 11 İngil
+
+===== Q97 ABCD =====
+Match. forty-nine 81 eighty-one 25 thirty-five 49
+  A) 
+  B) 
+  C) 
+  D) 
+
+===== Q98 ABCD =====
+Choose the correct variant. Who are they?
+  A) They’re my grandparents.
+  B) They’re my parents.
+  C) She’s my grandma and dad.
+  D) They’re my uncle and aunt.
+
+===== Q99 ABCD =====
+Fill in the blank. - How old is she? - ..... is twenty.
+  A) He
+  B) You
+  C) I
+  D) She s dili
+
+===== Q100 ABCD =====
+Choose the correct variant. Who is she?
+  A) She’s my sister.
+  B) He’s my sister.
+  C) She’s my brother.
+  D) They are my sisters.
+
+===== Q101 ABCD =====
+Choose the correct variant.
+  A) ninety
+  B) seventy
+  C) sixty
+  D) eighty
+
+===== Q102 ABCD =====
+Choose the correct picture according to the sentences. She is my parent.
+  A) 
+  B) 
+  C) 
+  D) 12
+
+===== Q103 ABCD =====
+Choose the correct variant. HowHow oldold isis ? she?she?
+  A) He’s twenty-one.
+  B) She am twenty.
+  C) She’s twenty-two.
+  D) I’m eleven.
+
+===== Q104 ABCD =====
+Fill in the blank. 15, 40, 65, ___, 115
+  A) one hundred
+  B) ninety
+  C) sixty
+  D) eighty
+
+===== Q105 ABCD =====
+Choose the different word.
+  A) sister
+  B) nephew
+  C) grandma
+  D) mom
+
+===== Q106 ABCD =====
+Which word doesn’t match the picture? uncle dad aunt mom niece me
+  A) uncle
+  B) me
+  C) dad
+  D) niece 13
+

@@ -1,0 +1,400 @@
+count=57 numbers=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 37, 38, 39, 40, 41, 42, 43, 44, 45, 47, 48, 49, 50, 91, 92, 93, 94, 95, 97, 98, 99, 100]
+
+===== Q1 ABCD =====
+Bu saitlə dilimizdə söz başlamır. Həmin saitin işləndiyi sözü seçin.
+  A) ana
+  B) ərik
+  C) qarı
+  D) kitab
+
+===== Q2 ABCD =====
+Eynicinsli qoşasamitli sözlərdən birində qoşa kar samitlərdən ikincisi cingiltili tələffüz olunur.
+  A) addım
+  B) şəffaf
+  C) tappıltı
+  D) ləzzət
+
+===== Q3 ABCD =====
+Hansı sıradakı sözlər ahəng qanununa tabedir?
+  A) cinayət, dilucu
+  B) fürsət, ixtisas
+  C) kitab, qalib
+  D) maldar, ölümsüz
+
+===== Q4 ABCD =====
+Hansı sözün tərkibində kar samit yoxdur?
+  A) mahir
+  B) sifət
+  C) ərik
+  D) müayinə
+
+===== Q5 ABCD =====
+Hansı sözdə sait uzanması sözün mənasını dəyişər?
+  A) surət
+  B) nərə
+  C) müzakirə
+  D) şair
+
+===== Q6 ABCD =====
+Hansı sözdə “o” saiti “a” kimi tələffüz olunur?
+  A) kosmos
+  B) depo
+  C) konfet
+  D) epos
+
+===== Q7 BCD =====
+Hansı sözdə sait səs uzanır və səsdüşümü baş vermir? FA) çovğun
+  B) zavod
+  C) lövbər
+  D) qanun
+
+===== Q8 ABCD =====
+Hansı sözdə dodaqlanan sait yoxdur?
+  A) eksponat
+  B) donanma
+  C) hüdud
+  D) kataloq
+
+===== Q9 ABCD =====
+Sözlərin birinin sonundakı “d” samitinin tələffüzü digərlərindən fərqlənir:
+  A) sənədlər
+  B) sənədə
+  C) sənədin
+  D) sənədimiz
+
+===== Q10 ABCD =====
+Hansı sözdə “k” samiti fərqli tələffüz olunur?
+  A) hakim
+  B) çiçək
+  C) kirpi
+  D) körpü
+
+===== Q11 ABCD =====
+“Q” samitinin tələffüzünü nəzərə alaraq fərqli bəndi göstərin
+  A) Üfüq altında
+  B) Məntiq nəzəriyyəsi
+  C) İstintaq sənədi
+  D) Natiq çıxışı Mətnə əsasən 12 15 nömrəli tapşırıqları yerinə yetirin. Yerdən Günəşə qədər olan məsafə
+
+===== Q12 ABCD =====
+Mətndə hansı suala cavab yoxdur?
+  A) Ay Yerə Günəşdən neçə dəfə yaxındır?
+  B) Yerdən Günəşə qədər olan məsafə nə qədərdir?
+  C) Ayın, yoxsa Günəşin diametri böyükdür?
+  D) Ayın sahəsi nə qədərdir?
+
+===== Q13 ABCD =====
+Altından xətt çəkilmiş sözün yerində işlənə bilər.
+  A) planet
+  B) dairə
+  C) çevrə
+  D) perimetr
+
+===== Q14 ABCD =====
+Mətnə görə “tutulmaq” sözünün mənasını müəyyən edin.
+  A) Polis və ya digər orqanlar tərəfindən nəzarətə götürülmək
+  B) Qarşısının kəsilməsi, görülmə məhdudluğu
+  C) Kiminsə arxasınca qaçaraq onu yaxalamaq
+  D) Halı dəyişmək, özünü narahat hiss etmək
+
+===== Q15 ABCD =====
+Mətnə əsasən tünd qara hərflə verilmiş sözlə eyni mənada işlənən sözün olduğu cümləni müəyyən edin.
+  A) Qutunun bir tərəfində yazı var idi
+  B) Onlar evə tərəf getdilər
+  C) Məktəbə tərəf xeyli yüyürdük
+  D) Maşın kəndə tərəf irəliləyirdi
+
+===== Q16 ABCD =====
+A ən çox neçə ola bilər? 5005 : 5 > A
+  A) 1002
+  B) 1001
+  C) 1004
+  D) 1000 3
+
+===== Q17 ABCD =====
+3 saatın hissəsini tapın. 4
+  A) 1 saat 25 dəq
+  B) 2 saat 15 dəq
+  C) 1 saat 45 dəq
+  D) 2 saat 25 dəq
+
+===== Q18 ABCD =====
+Elnurun 30, Elvinin 28, Aynurun 26 və Muradın 24 yaşı var. Onların yaşlarının ədədi ortasını tapın.
+  A) 20
+  B) 23
+  C) 27
+  D) 29
+
+===== Q19 ABCD =====
+Verilmiş ədədləri onluq say sistemində hansı ədədi göstərir? LXXV, MDXII, DCCVI
+  A) 75, 1512, 706
+  B) 35, 512, 806
+  C) 75, 1503, 706
+  D) 75, 1912, 806
+
+===== Q20 ABCD =====
+23579 < 23ab9 < 23999 verilmiş bərabərsizliklərdə a + b maksimum neçə ola bilər?
+  A) 13
+  B) 15
+  C) 17
+  D) 18
+
+===== Q21 ABCD =====
+118325786 natural ədədində milyonluqlar mərtəbəsi ilə minliklər mərtəbəsindəki üçrəqəmli ədədləri ədədləri cəmi neçədir?
+  A) 343
+  B) 13
+  C) 443
+  D) 904
+
+===== Q22 ABCD =====
+Aşağıdakılardan hansı 9000-ə qədər yuvarlaqlaşa bilməz.
+  A) 8950
+  B) 9019
+  C) 9040
+  D) 8359
+
+===== Q23 ABCD =====
+a + 4235 = 8345 olarsa, a + b = 6235 ifadəsində b-ni tap.
+  A) 3125
+  B) 2125
+  C) 4124
+  D) 1125
+
+===== Q24 ABCD =====
+5 ≤ a < 10 olarsa, a-nın ən böyük və ən kiçik natural qiymətlərinin hasilini tapın.
+  A) 54
+  B) 50
+  C) 45
+  D) 40
+
+===== Q25 ABCD =====
+Tənliyi həll edin: 23 ● 56 − a = 1200
+  A) 66
+  B) 77
+  C) 88
+  D) 99
+
+===== Q26 ABCD =====
+Bölən 33, qismət 237 və qalıq 18 olarsa, bölünəni Ftapın.
+  A) 7289
+  B) 7839
+  C) 7892
+  D) 7198
+
+===== Q27 ABCD =====
+2a51 ədədi 3-ə tam bölünür. Buna görə a-nın ala biləcəyi rəqəmlərin cəmi neçədir?
+  A) 10
+  B) 9
+  C) 11
+  D) 12
+
+===== Q28 ABCD =====
+182 : 6 + 21 ifadəsinin qiymətini tap.
+  A) 75
+  B) 65
+  C) 85
+  D) 95
+
+===== Q29 ABCD =====
+A ● B = ? A B ● ● 0 10 20 30
+  A) 305
+  B) 250
+  C) 125
+  D) 100 5 9 + x
+
+===== Q30 ABCD =====
+8 = 24 olarsa, x-ı təyin edin.
+  A) 3
+  B) 4
+  C) 5
+  D) 6
+
+===== Q31 ABCD =====
+d=? ● 7 9 11 9 8 d 7 9 5 6 8
+  A) 9
+  B) 10
+  C) 11
+  D) 12
+
+===== Q32 ABCD =====
+▲12=25 ▲25=51 ▲19=39 ▲34=?
+  A) 69
+  B) 56
+  C) 49
+  D) 18
+
+===== Q33 ABCD =====
+LAİK İLKƏ TƏLA ↔ İLKƏ-? ATƏL
+  A) 1426
+  B) 2163
+  C) 4531
+  D) 5314
+
+===== Q34 ABCD =====
+5 10 17 26 ?
+  A) 27
+  B) 31
+  C) 34
+  D) 37
+
+===== Q35 ABCD =====
+abc + → a+b+c=? 743 1322
+  A) 17
+  B) 21
+  C) 41
+  D) 11 5 7 8 7 3 ? 4 3 5 2 2 7
+
+===== Q37 ABCD =====
+Fərqli sözü tapın:
+  A) NALAS
+  B) RALMA
+  C) LGƏNPƏ
+  D) ANCARAV
+
+===== Q38 ABCD =====
+9 (45) 81 8 (36) 64 10 (?) ?
+  A) (64) 100
+  B) (56) 81
+  C) (44) 144
+  D) (55) 100
+
+===== Q39 ABCD =====
+TAXTA−MASA ? - ?
+  A) SÜD−QATIQ
+  B) SEMENT−BETON
+  C) PAMBIQ−PARÇA
+  D) UN−ÇÖRƏK
+
+===== Q40 ABCD =====
+5 6 ? 7 49 36
+  A) 52
+  B) 64
+  C) 72
+  D) 82
+
+===== Q41 ABCD =====
+Choose the correct variant relating to the school ob­ jects.
+  A) eraser, pen, notebook
+  B) bike, cell phone, school
+  C) shirt, jeans, pants
+  D) music, sports, art
+
+===== Q42 ABCD =====
+Describe the given time: 06:30
+  A) It’s six twenty.
+  B) It’s six thirty.
+  C) It’s five thirty.
+  D) It’s five fifteen.
+
+===== Q43 ABCD =====
+Choose the correct variant. How old are you?
+  A) I’m Smith.
+  B) I’m nine.
+  C) He’s happy.
+  D) He’s nine.
+
+===== Q44 ABCD =====
+Choose the correct word. A book is my favourite … .
+  A) desk
+  B) thing
+  C) animal
+  D) flower
+
+===== Q45 ABCD =====
+Put the words in the correct order. Tom / a / is / friend / cool
+  A) Tom is a cool friend.
+  B) Tom a is cool friend.
+  C) Tom cool is a friend.
+  D) Tom friend is a cool.
+
+===== Q47 ABCD =====
+Choose the correct variant. My classmates ... great!
+  A) is
+  B) are
+  C) am
+  D) isn't
+
+===== Q48 ABCD =====
+Match the halves. 1. _______ is your phone number? 2. _______ is your teacher? 3. _______ are you today? a. how b. what c. who
+  A) 1a, 2b, 3c
+  B) 1c, 2a, 3b
+  C) 1b, 2c, 3a
+  D) 1b, 2a, 3c
+
+===== Q49 ABCD =====
+Choose the correct variant. Linda's favorite hobby is painting. She has a small red brush in her house.
+  A) Linda likes painting.
+  B) Linda dislike a house.
+  C) Linda's hobby is gardening.
+  D) Linda has a blue brush.
+
+===== Q50 ABCD =====
+Choose the correct variant. Tom has a small family. There are four people in his family. His father is a teacher, and his mother is a doctor.
+  A) Tom's mother is a pilot.
+  B) Tom is a student.
+  C) Tom's father is a teacher.
+  D) Tom has a big family.
+
+===== Q91 ABCD =====
+Qlásnıe búkvı: a, o, u, ı, g, i, .....
+  A) e, ё, ö, ə
+  B) b, v, q, d
+  C) ö, ə, s, t,
+  D) e, ё, y, k,
+
+===== Q92 ABCD =====
+Slová, kotórıe naçináötsə s qlásnoy búkvı.
+  A) volk, kot
+  B) leto, iqra
+  C) öbka, dom
+  D) uliüa, əbloko
+
+===== Q93 ABCD =====
+Mühəndis
+  A) İncener
+  B) Portnoy
+  C) Parikmaxer
+  D) Xudocnik
+
+===== Q94 ABCD =====
+Vstavğte propuhennıe slova on ili ona. Gto moə mama. ......... uçitelğniüa. A Gto moy dədə. ......... pocarnıy.
+  A) on, ona
+  B) ona, on
+  C) on, on
+  D) ona, ona
+
+===== Q95 ABCD =====
+Slova, qde bukva ‘‘k’’ v seredine slova 1 2 3 4 5
+  A) 1,2,3
+  B) 3,4
+  C) 4,5
+  D) 1,2,5
+
+===== Q97 ABCD =====
+Tanışlıq üçün istifadə olunmur:
+  A) Mocno s toboy poznakomitğsə?
+  B) Davay poznakomimsə!
+  C) Budem znakomı!
+  D) Budğ zdorov!
+
+===== Q98 ABCD =====
+Koqo mı ne vidim na kartinke?
+  A) vnuçku
+  B) babuşku
+  C) dədö
+  D) deduşku
+
+===== Q99 ABCD =====
+Slova, oboznaçaöhie liü mucskoqo pola, otnosətsə k slovu on i soçetaötsə so slovom .............. .
+  A) moy
+  B) ona
+  C) oni
+  D) moə
+
+===== Q100 ABCD =====
+Kakie slova soçetaötsə so slovom moy?
+  A) Babuşka, vnuk
+  B) sın, papa
+  C) doçğ, mama
+  D) dədə, tёtə
+
