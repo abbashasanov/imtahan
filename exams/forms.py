@@ -374,6 +374,21 @@ class StudentProfileForm(PhoneDistrictMixin, forms.Form):
         return profile
 
 
+class QuestionScreenshotForm(forms.Form):
+    number = forms.IntegerField(
+        label="Sual nömrəsi",
+        min_value=1,
+        widget=forms.NumberInput(attrs={"class": "field-input", "min": 1, "placeholder": "məs. 44"}),
+    )
+    image = forms.ImageField(
+        label="Skrin",
+        widget=forms.ClearableFileInput(
+            attrs={"class": "field-input", "accept": "image/png,image/jpeg,image/webp,image/gif"}
+        ),
+        help_text="PDF-dəki sualı və A–D variantlarını bir skrin şəklində kəsin.",
+    )
+
+
 class QuestionEditForm(forms.ModelForm):
     class Meta:
         model = Question
@@ -404,6 +419,11 @@ class QuestionEditForm(forms.ModelForm):
         self.fields["subject"].required = False
         self.fields["subject"].queryset = Subject.objects.all()
         self.fields["subject"].empty_label = "— fənn seçin —"
+        self.fields["image"].required = False
+        self.fields["image"].help_text = (
+            "PDF-dən həmin sualı və cavabları skrin edib buraya yükləyə bilərsiniz."
+        )
+        self.fields["number"].help_text = "Məsələn 44. Əskik sualı bu nömrə ilə əlavə edin."
 
 
 class ChoiceEditForm(forms.ModelForm):

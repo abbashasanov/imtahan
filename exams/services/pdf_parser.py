@@ -10,7 +10,7 @@ from django.core.files.base import ContentFile
 from django.db import transaction
 
 QUESTION_START = re.compile(
-    r"(?m)^\s*(?:Sual\s+)?(\d{1,3})\s*[\.\)\:]\s+",
+    r"(?m)^\s*(?:Sual\s+)?(\d{1,3})\s*[\.\)\:](?:\s+|$)",
     re.IGNORECASE,
 )
 CHOICE_START = re.compile(
@@ -20,7 +20,7 @@ ANSWER_KEY_ITEM = re.compile(
     r"(\d{1,3})\s*[-.:\)]\s*([A-E])",
     re.IGNORECASE,
 )
-QUESTION_LINE = re.compile(r"^\s*(\d{1,3})\s*[\.\)\:]\s+")
+QUESTION_LINE = re.compile(r"^\s*(\d{1,3})\s*[\.\)\:](?:\s+|$)")
 HEADER_LINE = re.compile(
     r"^\s*(BİOLOGİYA|MÜƏLLİM İMTAHANI\s*[–—-].*|AÇIQ TİPLİ TEST TAPŞIRIQLARI|"
     r"Azərbaycan dili|Riyaziyyat|İngilis dili|Rus dili|Həyat bilgisi|Məntiq|"
@@ -126,10 +126,14 @@ class ParseError(Exception):
     """PDF və ya mətn parse edilə bilmədikdə qaldırılır."""
 
 
+_FORMAT_CHARS = str.maketrans("", "", "\u200c\u200b\u200d\ufeff\u00ad")
+
+
 def decode_azlat(text: str) -> str:
     """AzLat şriftindən çıxan kiril kodları Azərbaycan latınına çevirir."""
     if not text:
         return text
+    text = text.translate(_FORMAT_CHARS)
     cyrillic = len(re.findall(r"[А-яЁё]", text))
     if cyrillic == 0:
         return text
@@ -172,6 +176,7 @@ def _unstick_column_glyphs(text: str) -> str:
 def _normalize_text(text: str) -> str:
     text = text.replace("\r\n", "\n").replace("\r", "\n")
     text = text.replace("\u00a0", " ")
+    text = text.translate(_FORMAT_CHARS)
     text = re.sub(r"[ \t]+\n", "\n", text)
     text = re.sub(r"(\w)-\n(\w)", r"\1\2", text)
     return _unstick_column_glyphs(text).strip()
@@ -327,11 +332,15 @@ def parse_questions(text: str) -> list[dict]:
         )
 
     real: list[re.Match[str]] = []
+    last_real_original = 0
     for index, match in enumerate(matches):
         end = matches[index + 1].start() if index + 1 < len(matches) else len(normalized)
         body = normalized[match.end() : end]
-        if _is_real_question_body(body):
+        original = int(match.group(1))
+        consecutive = bool(last_real_original) and original == last_real_original + 1
+        if _is_real_question_body(body) or consecutive:
             real.append(match)
+            last_real_original = original
 
     if not real:
         raise ParseError(
@@ -404,7 +413,11 @@ def _clean_snippet(value: str, *, keep_leading_passage: bool = False) -> str:
 def _parse_question_body(number: int, body: str) -> dict:
     choice_matches = list(CHOICE_START.finditer(body))
     if not choice_matches:
-        return {"number": number, "text": _clean_snippet(body, keep_leading_passage=True), "choices": []}
+        return {
+            "number": number,
+            "text": _clean_snippet(body, keep_leading_passage=True),
+            "choices": [{"letter": letter, "text": ""} for letter in "ABCD"],
+        }
 
     question_text = _clean_snippet(
         body[: choice_matches[0].start()], keep_leading_passage=True

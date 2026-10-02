@@ -110,12 +110,25 @@
       <span class="step-num">4</span>
       <div>
         <h2>Suallar</h2>
-        <p class="help">{{ questions|length }} sual · PDF-dən sonra da özünüz əlavə edin · düzgün cavabı hər sual üçün seçib saxlayın · ümumi bal: {% if exam.default_points %}{{ exam.default_points }}{% else %}təyin olunmayıb{% endif %}</p>
+        <p class="help">{{ questions|length }} sual · PDF-dən sonra da özünüz əlavə edin, silin və ya skrinlə əvəz edin · düzgün cavabı hər sual üçün seçib saxlayın · ümumi bal: {% if exam.default_points %}{{ exam.default_points }}{% else %}təyin olunmayıb{% endif %}</p>
       </div>
     </div>
     <p style="margin:0 0 12px">
       <a class="btn primary" href="{% url 'panel_question_create' exam.pk %}">Sual əlavə et</a>
     </p>
+    <form class="screenshot-form" method="post" action="{% url 'panel_question_screenshot' exam.pk %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div>
+        <label class="field-label" for="{{ screenshot_form.number.id_for_label }}">Sual nömrəsi</label>
+        {{ screenshot_form.number }}
+      </div>
+      <div class="screenshot-file">
+        <label class="field-label" for="{{ screenshot_form.image.id_for_label }}">PDF skrin (sual + cavablar)</label>
+        {{ screenshot_form.image }}
+        <p class="help">Səhv və ya əskik sualı PDF-dən skrin edib eyni nömrəyə yükləyin. 44 varsa, əvəz olunur.</p>
+      </div>
+      <button class="btn primary" type="submit">Skrini yüklə</button>
+    </form>
     <form method="post" action="{% url 'panel_exam_marking' exam.pk %}">
       {% csrf_token %}
       {% if marked_questions %}
@@ -143,13 +156,16 @@
       {% endif %}
       {% for item in marked_questions %}
         {% with question=item.question %}
-      <article class="q-preview">
+      <article class="q-preview" id="sual-{{ question.number }}">
         <div class="q-preview-head">
           <label style="display:flex;gap:8px;align-items:center">
             <input type="checkbox" name="selected" value="{{ question.pk }}">
             <h3 style="margin:0">{{ question.number }}. {{ question.text }}</h3>
           </label>
-          <a class="btn" href="{% url 'panel_question_edit' exam.pk question.pk %}">Redaktə</a>
+          <div class="q-preview-actions">
+            <a class="btn" href="{% url 'panel_question_edit' exam.pk question.pk %}">Redaktə</a>
+            <button class="btn danger" type="submit" form="delete-question-{{ question.pk }}">Sil</button>
+          </div>
         </div>
         {% if item.warnings %}
           <ul class="warn-list">
@@ -211,6 +227,11 @@
         </div>
       {% endif %}
     </form>
+    {% for item in marked_questions %}
+    <form id="delete-question-{{ item.question.pk }}" method="post" action="{% url 'panel_question_delete' exam.pk item.question.pk %}" onsubmit="return confirm('Sual {{ item.question.number }} silinsin?');">
+      {% csrf_token %}
+    </form>
+    {% endfor %}
   </section>
 
   <section class="step-card">

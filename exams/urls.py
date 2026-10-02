@@ -25,6 +25,11 @@ urlpatterns = [
     path("panel/exams/<int:pk>/delete/", panel_views.exam_delete, name="panel_exam_delete"),
     path("panel/exams/<int:exam_pk>/questions/new/", panel_views.question_create, name="panel_question_create"),
     path(
+        "panel/exams/<int:exam_pk>/questions/screenshot/",
+        panel_views.question_screenshot,
+        name="panel_question_screenshot",
+    ),
+    path(
         "panel/exams/<int:exam_pk>/questions/<int:pk>/",
         panel_views.question_edit,
         name="panel_question_edit",

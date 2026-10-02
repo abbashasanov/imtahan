@@ -11,6 +11,7 @@ from exams.models import Choice, Exam, ExamSubmission, Question, StudentProfile,
 from exams.services.pdf_parser import (
     ParseError,
     apply_answer_key,
+    collect_question_regions,
     decode_azlat,
     extract_pdf_text,
     import_exam_from_pdf,
@@ -103,6 +104,59 @@ def make_scrambled_twocolumn_pdf() -> bytes:
     page.insert_text((330, 200), "B) uc-b", fontsize=11)
     page.insert_text((330, 230), "C) uc-c", fontsize=11)
     page.insert_text((330, 260), "D) uc-d", fontsize=11)
+    data = document.tobytes()
+    document.close()
+    return data
+
+
+def make_grade1_image_gap_pdf() -> bytes:
+    """1-ci sinif: sağda 44/45, növbəti səhifədə 47/49 və 48/50 şəkil-tipli başlıqlar."""
+    import pymupdf
+
+    document = pymupdf.open()
+    page = document.new_page(width=596, height=842)
+    page.insert_text((32, 130), "43. Hansı şəkil fərqlidir?", fontsize=11)
+    page.insert_text((44, 160), "A) a", fontsize=11)
+    page.insert_text((44, 180), "B) b", fontsize=11)
+    page.insert_text((44, 200), "C) c", fontsize=11)
+    page.insert_text((44, 220), "D) d", fontsize=11)
+    page.insert_text((320, 130), "44. ANA = ATA = ?", fontsize=11)
+    page.insert_text((330, 160), "A)", fontsize=11)
+    page.insert_text((430, 160), "B)", fontsize=11)
+    page.insert_text((330, 190), "C)", fontsize=11)
+    page.insert_text((430, 190), "D)", fontsize=11)
+    page.insert_text((320, 330), "45.", fontsize=11)
+    page.insert_text((330, 360), "A)", fontsize=11)
+    page.insert_text((430, 360), "B)", fontsize=11)
+    page.insert_text((330, 390), "C)", fontsize=11)
+    page.insert_text((430, 390), "D)", fontsize=11)
+    page.insert_text((320, 520), "46. Aysel menim xalamdir?", fontsize=11)
+    page.insert_text((330, 550), "A) nene", fontsize=11)
+    page.insert_text((330, 570), "B) ana", fontsize=11)
+    page.insert_text((330, 590), "C) bibi", fontsize=11)
+    page.insert_text((330, 610), "D) xala", fontsize=11)
+
+    page2 = document.new_page(width=596, height=842)
+    page2.insert_text((32, 130), "47.", fontsize=11)
+    page2.insert_text((44, 160), "A)", fontsize=11)
+    page2.insert_text((144, 160), "B)", fontsize=11)
+    page2.insert_text((44, 190), "C)", fontsize=11)
+    page2.insert_text((144, 190), "D)", fontsize=11)
+    page2.insert_text((32, 400), "48. Sozler arasinda elaqe?", fontsize=11)
+    page2.insert_text((44, 430), "A)", fontsize=11)
+    page2.insert_text((144, 430), "B)", fontsize=11)
+    page2.insert_text((44, 460), "C)", fontsize=11)
+    page2.insert_text((144, 460), "D)", fontsize=11)
+    page2.insert_text((320, 130), "49.", fontsize=11)
+    page2.insert_text((330, 160), "A)", fontsize=11)
+    page2.insert_text((430, 160), "B)", fontsize=11)
+    page2.insert_text((330, 190), "C)", fontsize=11)
+    page2.insert_text((430, 190), "D)", fontsize=11)
+    page2.insert_text((320, 400), "50.", fontsize=11)
+    page2.insert_text((330, 430), "A) 6", fontsize=11)
+    page2.insert_text((430, 430), "B) 8", fontsize=11)
+    page2.insert_text((330, 460), "C) 9", fontsize=11)
+    page2.insert_text((430, 460), "D) 10", fontsize=11)
     data = document.tobytes()
     document.close()
     return data
@@ -282,6 +336,80 @@ E) beş
         self.assertIn("Natiq", fourth["text"])
         self.assertEqual(fourth["choices"][0]["text"], "-ci")
         self.assertEqual(fourth["choices"][1]["text"], "-in")
+
+    def test_zero_width_after_question_number_is_still_parsed(self):
+        text = (
+            "24. 5 onluq 4 təklik?\n"
+            "A) 75\nB) 64\nC) 54\nD) 45\n"
+            "25.\u200c \u200c Fikrimdə tutduğum ədədin onluğu 6-dır.\n"
+            "A)\u200c 66\nB)\u200c 63\nC)\u200c 48\nD)\u200c 54\n"
+            "31.\u200c  \u200cMəktəb daxilində şagirdlər hansı qaydaya əməl etməlidirlər?\n"
+            "A)\u200c Qəza siqnalına toxunmamaq.\n"
+            "B)\u200c Dərsə gecikmək.\n"
+            "C)\u200c Bitkilərə ziyan vurmaq.\n"
+            "D) Sinif yoldaşları ilə danışmaq.\n"
+            "46.\u200c\n"
+            "A) 11\nB) 13\nC) 9\nD) 10\n"
+        )
+        questions = parse_questions(text)
+        self.assertEqual([item["number"] for item in questions], [24, 25, 31, 46])
+        self.assertIn("Fikrimdə", questions[1]["text"])
+        self.assertEqual(questions[1]["choices"][0]["text"], "66")
+        self.assertIn("Məktəb daxilində", questions[2]["text"])
+        self.assertEqual([choice["letter"] for choice in questions[3]["choices"]], list("ABCD"))
+
+    def test_image_only_consecutive_questions_are_not_merged(self):
+        text = (
+            "43. Hansı şəkil fərqlidir?\n"
+            "A) \nB) \nC) \nD) \n"
+            "44. A N A = A T A = ?\n"
+            "A) \nB) \nC) \nD) \n"
+            "45.\u200c\n"
+            "?\n"
+            "46. Aysel mənim xalamdır. Onun anası mənim nəyimdir?\n"
+            "A) nənəm\nB) anam\nC) bibim\nD) xalam\n"
+            "47.\u200c\n"
+            "+ = ?\n"
+            "48. Sözlər arasında əlaqəyə əsasən məntiqi tapın.\n"
+            "A) \nB) \nC) \nD) \n"
+            "49.\u200c\n"
+            "?\n"
+            "50.\u200c\n"
+            "+ + 2 6 ?\n"
+            "A) 6\nB) 8\nC) 9\nD) 10\n"
+        )
+        questions = parse_questions(text)
+        numbers = [item["number"] for item in questions]
+        self.assertEqual(numbers, [43, 44, 45, 46, 47, 48, 49, 50])
+        q44 = next(item for item in questions if item["number"] == 44)
+        q45 = next(item for item in questions if item["number"] == 45)
+        q47 = next(item for item in questions if item["number"] == 47)
+        q48 = next(item for item in questions if item["number"] == 48)
+        q49 = next(item for item in questions if item["number"] == 49)
+        q50 = next(item for item in questions if item["number"] == 50)
+        self.assertIn("A N A", q44["text"])
+        self.assertNotIn("45.", q44["text"])
+        self.assertEqual([choice["letter"] for choice in q45["choices"]], list("ABCD"))
+        self.assertEqual([choice["letter"] for choice in q47["choices"]], list("ABCD"))
+        self.assertNotIn("49.", q47["text"])
+        self.assertIn("Sözlər arasında", q48["text"])
+        self.assertNotIn("50.", q48["text"])
+        self.assertEqual([choice["letter"] for choice in q49["choices"]], list("ABCD"))
+        self.assertEqual(q50["choices"][0]["text"], "6")
+
+    def test_grade1_image_gap_regions_are_split(self):
+        pdf = make_grade1_image_gap_pdf()
+        questions = parse_questions(extract_pdf_text(pdf))
+        self.assertEqual(
+            [item["number"] for item in questions],
+            [43, 44, 45, 46, 47, 48, 49, 50],
+        )
+        regions = {number: rect for number, _page, rect in collect_question_regions(pdf)}
+        for number in (44, 45, 47, 49, 50):
+            self.assertIn(number, regions)
+        self.assertLessEqual(regions[44].y1, regions[45].y0 + 4)
+        self.assertLessEqual(regions[47].y1, regions[48].y0 + 4)
+        self.assertLessEqual(regions[49].y1, regions[50].y0 + 4)
 
     def test_low_header_question_is_not_clipped(self):
         questions = parse_questions(extract_pdf_text(make_top_right_question_pdf()))
@@ -734,6 +862,65 @@ class PanelQuestionEditTests(TestCase):
         self.assertContains(response, f"/panel/exams/{self.exam.pk}/questions/{self.question.pk}/")
         self.assertContains(response, "Sual əlavə et")
         self.assertContains(response, f"/panel/exams/{self.exam.pk}/questions/new/")
+        self.assertContains(response, f"/panel/exams/{self.exam.pk}/questions/screenshot/")
+        self.assertContains(response, "PDF skrin")
+        self.assertContains(response, "Sil")
+
+    def _png(self, name="q44.png"):
+        from io import BytesIO
+        from PIL import Image
+
+        buffer = BytesIO()
+        Image.new("RGB", (12, 12), (20, 80, 180)).save(buffer, "PNG")
+        return SimpleUploadedFile(name, buffer.getvalue(), content_type="image/png")
+
+    def test_staff_can_upload_screenshot_as_missing_question_number(self):
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            f"/panel/exams/{self.exam.pk}/questions/screenshot/",
+            {"number": "44", "image": self._png()},
+        )
+        self.assertRedirects(response, f"/panel/exams/{self.exam.pk}/#sual-44")
+        question = Question.objects.get(exam=self.exam, number=44)
+        self.assertTrue(question.image)
+        self.assertEqual(
+            list(question.choices.order_by("letter").values_list("letter", flat=True)),
+            ["A", "B", "C", "D"],
+        )
+
+    def test_staff_can_replace_existing_question_with_screenshot(self):
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            f"/panel/exams/{self.exam.pk}/questions/screenshot/",
+            {"number": "1", "image": self._png("q1.png")},
+        )
+        self.assertEqual(response.status_code, 302)
+        self.question.refresh_from_db()
+        self.assertEqual(self.question.text, "Sual 1")
+        self.assertTrue(self.question.image)
+        self.choice_a.refresh_from_db()
+        self.choice_b.refresh_from_db()
+        self.assertEqual(self.choice_a.text, "")
+        self.assertEqual(self.choice_b.text, "")
+        self.assertTrue(self.choice_b.is_correct)
+        self.assertFalse(self.choice_a.is_correct)
+
+    def test_staff_can_delete_question_from_exam_page(self):
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            f"/panel/exams/{self.exam.pk}/questions/{self.question.pk}/delete/"
+        )
+        self.assertRedirects(response, f"/panel/exams/{self.exam.pk}/#suallar")
+        self.assertFalse(Question.objects.filter(pk=self.question.pk).exists())
+
+    def test_student_cannot_upload_screenshot(self):
+        self.client.force_login(self.student)
+        response = self.client.post(
+            f"/panel/exams/{self.exam.pk}/questions/screenshot/",
+            {"number": "44", "image": self._png()},
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Question.objects.filter(exam=self.exam, number=44).exists())
 
     def test_staff_can_open_manual_question_form(self):
         self.client.force_login(self.admin)

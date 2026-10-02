@@ -1,5 +1,6 @@
 from datetime import timedelta
 from functools import wraps
+from pathlib import Path
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model, update_session_auth_hash
@@ -18,6 +19,7 @@ from exams.forms import (
     QuestionChoiceCreateFormSet,
     QuestionChoiceFormSet,
     QuestionEditForm,
+    QuestionScreenshotForm,
 )
 from exams.models import Certificate, Choice, Exam, ExamSubmission, Question, Subject
 from exams.regions import BAKU, GRADE_CHOICES, grade_label
@@ -182,6 +184,7 @@ def exam_detail(request, pk):
             "questions": questions,
             "marked_questions": marked_questions,
             "subjects": Subject.objects.all(),
+            "screenshot_form": QuestionScreenshotForm(),
         },
     )
 
@@ -242,6 +245,54 @@ def question_create(request, exam_pk):
         "panel/question_form.html",
         {"exam": exam, "question": question, "form": form, "formset": formset},
     )
+
+
+def _ensure_choice_letters(question, letters="ABCD"):
+    existing = set(question.choices.values_list("letter", flat=True))
+    for letter in letters:
+        if letter not in existing:
+            Choice.objects.create(question=question, letter=letter, text="", is_correct=False)
+
+
+def _clear_choice_content(question):
+    for choice in question.choices.all():
+        if choice.image:
+            choice.image.delete(save=False)
+        choice.text = ""
+        choice.image = ""
+        choice.save(update_fields=["text", "image"])
+
+
+@staff_required
+def question_screenshot(request, exam_pk):
+    exam = get_object_or_404(Exam, pk=exam_pk)
+    if request.method != "POST":
+        return redirect(f"{reverse('panel_exam_detail', args=[exam.pk])}#suallar")
+    form = QuestionScreenshotForm(request.POST, request.FILES)
+    if not form.is_valid():
+        messages.error(request, "Sual nömrəsi və skrin şəklini seçin.")
+        return redirect(f"{reverse('panel_exam_detail', args=[exam.pk])}#suallar")
+    number = form.cleaned_data["number"]
+    image = form.cleaned_data["image"]
+    question, created = Question.objects.get_or_create(
+        exam=exam,
+        number=number,
+        defaults={"text": f"Sual {number}"},
+    )
+    if not created:
+        question.text = f"Sual {number}"
+        question.save(update_fields=["text"])
+        _clear_choice_content(question)
+    suffix = Path(getattr(image, "name", "") or "").suffix.lower()
+    if suffix not in {".png", ".jpg", ".jpeg", ".webp", ".gif"}:
+        suffix = ".png"
+    question.image.save(f"exam{exam.pk}_q{number}{suffix}", image, save=True)
+    _ensure_choice_letters(question)
+    if created:
+        messages.success(request, f"Sual {number} skrinlə əlavə olundu. Düzgün cavabı aşağıda işarələyin.")
+    else:
+        messages.success(request, f"Sual {number} skrinlə əvəz olundu. Düzgün cavabı yoxlayın.")
+    return redirect(f"{reverse('panel_exam_detail', args=[exam.pk])}#sual-{question.number}")
 
 
 @staff_required
