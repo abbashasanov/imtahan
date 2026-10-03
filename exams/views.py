@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -187,13 +187,11 @@ def exam_result(request, pk):
         is_completed=True,
     )
     payload = answer_sheet_payload(submission)
-    certificate = Certificate.objects.filter(submission=submission).first()
     return render(
         request,
         "exams/exam_result.html",
         {
             **payload,
-            "certificate": certificate,
             "show_score": submission.exam.show_score_immediately or request.user.is_staff,
             "show_answers": submission.exam.show_correct_answers or request.user.is_staff,
             "staff_view": False,
@@ -203,13 +201,12 @@ def exam_result(request, pk):
 
 @login_required
 def certificate_pdf(request, pk):
+    if not request.user.is_staff:
+        raise Http404()
     certificate = get_object_or_404(
         Certificate.objects.select_related("submission__user", "submission__exam"),
         pk=pk,
     )
-    is_owner = certificate.submission.user_id == request.user.id
-    if not (request.user.is_staff or is_owner):
-        return HttpResponseForbidden("Bu sertifikata baxmaq icazəniz yoxdur.")
     response = HttpResponse(build_certificate_pdf(certificate), content_type="application/pdf")
     response["Content-Disposition"] = f'attachment; filename="{certificate.code}.pdf"'
     return response

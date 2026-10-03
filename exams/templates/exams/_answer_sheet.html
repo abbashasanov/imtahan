@@ -26,8 +26,8 @@
   {% endif %}
 
   <div class="sheet-actions">
-    {% if certificate %}
-      <a class="btn" href="{% url 'certificate_pdf' certificate.pk %}">Sertifikatı yüklə</a>
+    {% if staff_view and certificate %}
+      <a class="btn" href="{% url 'panel_certificate_pdf' certificate.pk %}">Sertifikatı yüklə</a>
     {% endif %}
     {% if staff_view %}
       <a class="btn secondary" href="{% url 'panel_exam_participants' exam.pk %}">İştirakçılara qayıt</a>

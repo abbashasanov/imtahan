@@ -644,6 +644,11 @@ class StudentExamFlowTests(TestCase):
         self.assertNotContains(result, f"{self.exam.passing_score}%")
         self.assertContains(result, "İmtahan Nəticə Vərəqəsi")
         self.assertContains(result, "Ayan")
+        self.assertNotContains(result, "Sertifikat")
+        self.assertNotContains(result, "Sertifikatı")
+        cert = submission.certificate
+        hidden = self.client.get(f"/certificates/{cert.pk}/pdf/")
+        self.assertEqual(hidden.status_code, 404)
 
 
 class ExamWindowTests(TestCase):
