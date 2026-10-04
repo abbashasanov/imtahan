@@ -2,7 +2,7 @@ from django import forms
 from django.forms import inlineformset_factory
 from django.utils import timezone
 
-from exams.models import Choice, Exam, Question, StudentProfile, Subject
+from exams.models import Choice, Exam, Question, SiteSettings, StudentProfile, Subject
 
 
 class DateTimeLocalInput(forms.DateTimeInput):
@@ -536,3 +536,27 @@ class ExamSettingsForm(forms.ModelForm):
         if max_attempts is not None and max_attempts < 1:
             self.add_error("max_attempts", "Ən azı 1 cəhd olmalıdır.")
         return cleaned
+
+
+class SiteSettingsForm(forms.ModelForm):
+    class Meta:
+        model = SiteSettings
+        fields = ["certificate_contact_phone"]
+        widgets = {
+            "certificate_contact_phone": forms.TextInput(
+                attrs={"class": "field-input", "placeholder": "050 111 22 33"}
+            ),
+        }
+
+    def clean_certificate_contact_phone(self):
+        from exams.phone import normalize_phone
+
+        raw = (self.cleaned_data.get("certificate_contact_phone") or "").strip()
+        if not raw:
+            return ""
+        try:
+            return normalize_phone(raw)
+        except ValueError:
+            raise forms.ValidationError(
+                "Düzgün Azərbaycan mobil nömrəsi yazın. Nümunə: 050 111 22 33"
+            )

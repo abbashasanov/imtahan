@@ -4,7 +4,7 @@ from django.urls import path, reverse
 from django.utils.html import format_html
 
 from exams.forms import ExamAdminForm, ExamImportForm
-from exams.models import Certificate, Choice, Exam, ExamSubmission, Question, StudentProfile, Subject, UserAnswer
+from exams.models import Certificate, Choice, Exam, ExamSubmission, Question, SiteSettings, StudentProfile, Subject, UserAnswer
 from exams.services.pdf_parser import ParseError, import_exam_from_pdf
 
 
@@ -222,6 +222,17 @@ class StudentProfileAdmin(admin.ModelAdmin):
     @admin.display(description="Ərazi")
     def area_label(self, obj):
         return obj.area_label
+
+
+@admin.register(SiteSettings)
+class SiteSettingsAdmin(admin.ModelAdmin):
+    fields = ("certificate_contact_phone",)
+
+    def has_add_permission(self, request):
+        return not SiteSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 admin.site.site_header = "İmtahan platforması"

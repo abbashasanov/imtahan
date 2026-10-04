@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
 
 from exams.forms import StudentProfileForm, StudentRegistrationForm
-from exams.models import Certificate, Exam, ExamSubmission, UserAnswer, profile_is_complete
+from exams.models import Certificate, Exam, ExamSubmission, SiteSettings, UserAnswer, profile_is_complete
 from exams.services.certificates import build_certificate_pdf, issue_certificate_if_passed
 from exams.services.scoring import answer_sheet_payload, score_answers
 
@@ -187,6 +187,7 @@ def exam_result(request, pk):
         is_completed=True,
     )
     payload = answer_sheet_payload(submission)
+    contact = SiteSettings.load()
     return render(
         request,
         "exams/exam_result.html",
@@ -195,6 +196,8 @@ def exam_result(request, pk):
             "show_score": submission.exam.show_score_immediately or request.user.is_staff,
             "show_answers": submission.exam.show_correct_answers or request.user.is_staff,
             "staff_view": False,
+            "certificate_contact_phone": contact.certificate_contact_display,
+            "certificate_contact_url": contact.certificate_whatsapp_url,
         },
     )
 

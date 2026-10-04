@@ -20,8 +20,9 @@ from exams.forms import (
     QuestionChoiceFormSet,
     QuestionEditForm,
     QuestionScreenshotForm,
+    SiteSettingsForm,
 )
-from exams.models import Certificate, Choice, Exam, ExamSubmission, Question, Subject
+from exams.models import Certificate, Choice, Exam, ExamSubmission, Question, SiteSettings, Subject
 from exams.regions import BAKU, GRADE_CHOICES, grade_label
 from exams.services.scoring import (
     answer_sheet_payload,
@@ -580,6 +581,20 @@ def user_list(request):
             "area_choices": _area_choices(),
         },
     )
+
+
+@staff_required
+def site_settings(request):
+    settings_obj = SiteSettings.load()
+    if request.method == "POST":
+        form = SiteSettingsForm(request.POST, instance=settings_obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Sertifikat əlaqə nömrəsi yadda saxlanıldı.")
+            return redirect("panel_site_settings")
+    else:
+        form = SiteSettingsForm(instance=settings_obj)
+    return render(request, "panel/site_settings.html", {"form": form})
 
 
 @staff_required

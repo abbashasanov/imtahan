@@ -88,4 +88,15 @@
       </div>
     </section>
   {% endif %}
+
+  {% if not staff_view and certificate_contact_phone %}
+    <p class="sheet-contact">
+      Sertifikat əldə etmək üçün bizə yazın:
+      {% if certificate_contact_url %}
+        <a href="{{ certificate_contact_url }}" target="_blank" rel="noopener">{{ certificate_contact_phone }}</a>
+      {% else %}
+        {{ certificate_contact_phone }}
+      {% endif %}
+    </p>
+  {% endif %}
 </div>

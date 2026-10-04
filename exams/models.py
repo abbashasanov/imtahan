@@ -372,3 +372,40 @@ class Certificate(models.Model):
             return profile.full_name
         full = user.get_full_name().strip()
         return full or user.get_username()
+
+
+class SiteSettings(models.Model):
+    certificate_contact_phone = models.CharField(
+        "Sertifikat əlaqə nömrəsi",
+        max_length=32,
+        blank=True,
+        help_text="Nəticə vərəqəsində «Sertifikat əldə etmək üçün bizə yazın» yanında görünür.",
+    )
+
+    class Meta:
+        verbose_name = "Sayt tənzimləməsi"
+        verbose_name_plural = "Sayt tənzimləməsi"
+
+    def __str__(self):
+        return "Sayt tənzimləməsi"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, _created = cls.objects.get_or_create(pk=1)
+        return obj
+
+    @property
+    def certificate_contact_display(self) -> str:
+        from exams.phone import format_local_phone
+
+        return format_local_phone(self.certificate_contact_phone)
+
+    @property
+    def certificate_whatsapp_url(self) -> str | None:
+        from exams.phone import whatsapp_url
+
+        return whatsapp_url(self.certificate_contact_phone)

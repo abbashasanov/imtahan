@@ -147,6 +147,19 @@
   color: #0f766e;
 }
 
+.sheet-contact {
+  margin: 0;
+  padding: 16px 24px 24px;
+  text-align: center;
+  color: #0f766e;
+  font-weight: 600;
+}
+
+.sheet-contact a {
+  color: #0f766e;
+  text-decoration: underline;
+}
+
 @media (max-width: 800px) {
   .sheet-meta { grid-template-columns: 1fr 1fr; }
 }

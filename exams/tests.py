@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.utils import timezone
 
-from exams.models import Choice, Exam, ExamSubmission, Question, StudentProfile, Subject
+from exams.models import Choice, Exam, ExamSubmission, Question, SiteSettings, StudentProfile, Subject
 from exams.services.pdf_parser import (
     ParseError,
     apply_answer_key,
@@ -644,11 +644,51 @@ class StudentExamFlowTests(TestCase):
         self.assertNotContains(result, f"{self.exam.passing_score}%")
         self.assertContains(result, "İmtahan Nəticə Vərəqəsi")
         self.assertContains(result, "Ayan")
-        self.assertNotContains(result, "Sertifikat")
-        self.assertNotContains(result, "Sertifikatı")
+        self.assertNotContains(result, "Sertifikatı yüklə")
+        self.assertNotContains(result, "Sertifikat əldə etmək")
         cert = submission.certificate
         hidden = self.client.get(f"/certificates/{cert.pk}/pdf/")
         self.assertEqual(hidden.status_code, 404)
+
+    def test_certificate_contact_appears_only_on_result_sheet(self):
+        settings_obj = SiteSettings.load()
+        settings_obj.certificate_contact_phone = "+994501112233"
+        settings_obj.save()
+        self.client.force_login(self.user)
+        taking = self.client.get(f"/exams/{self.exam.pk}/")
+        self.assertEqual(taking.status_code, 200)
+        self.assertNotContains(taking, "Sertifikat əldə etmək üçün")
+        listing = self.client.get("/")
+        self.assertNotContains(listing, "Sertifikat əldə etmək üçün")
+        self.client.post(
+            f"/exams/{self.exam.pk}/",
+            {f"q_{self.exam.questions.first().pk}": str(self.correct.pk)},
+        )
+        submission = self.user.exam_submissions.get(exam=self.exam)
+        result = self.client.get(f"/results/{submission.pk}/")
+        self.assertContains(result, "Sertifikat əldə etmək üçün bizə yazın")
+        self.assertContains(result, "050 111 22 33")
+        self.assertContains(result, "https://wa.me/994501112233")
+
+
+class PanelSiteSettingsTests(TestCase):
+    def setUp(self):
+        self.admin = get_user_model().objects.create_superuser("admin_contact", "ac@test.local", "adminpass")
+        self.student = complete_student("telebe_contact", phone="+994509990011")
+
+    def test_staff_can_change_certificate_contact_phone(self):
+        self.client.force_login(self.admin)
+        page = self.client.get("/panel/settings/")
+        self.assertEqual(page.status_code, 200)
+        self.assertContains(page, "Sertifikat əlaqəsi")
+        response = self.client.post("/panel/settings/", {"certificate_contact_phone": "055 222 33 44"})
+        self.assertRedirects(response, "/panel/settings/")
+        self.assertEqual(SiteSettings.load().certificate_contact_phone, "+994552223344")
+
+    def test_student_cannot_open_site_settings(self):
+        self.client.force_login(self.student)
+        response = self.client.get("/panel/settings/")
+        self.assertEqual(response.status_code, 302)
 
 
 class ExamWindowTests(TestCase):

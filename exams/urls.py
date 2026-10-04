@@ -45,5 +45,6 @@ urlpatterns = [
     path("panel/certificates/<int:pk>/pdf/", panel_views.certificate_pdf, name="panel_certificate_pdf"),
     path("panel/results/<int:pk>/certificate/", panel_views.certificate_issue, name="panel_certificate_issue"),
     path("panel/users/", panel_views.user_list, name="panel_users"),
+    path("panel/settings/", panel_views.site_settings, name="panel_site_settings"),
     path("panel/password/", panel_views.password_change, name="panel_password"),
 ]
