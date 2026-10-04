@@ -691,6 +691,87 @@ class PanelSiteSettingsTests(TestCase):
         self.assertEqual(response.status_code, 302)
 
 
+class PanelUserStatsTests(TestCase):
+    def setUp(self):
+        self.admin = get_user_model().objects.create_superuser("admin_users", "au@test.local", "adminpass")
+        self.s1 = complete_student(
+            "bineqedi5",
+            phone="+994501110101",
+            grade=5,
+            baku_district="Binəqədi",
+            first_name="Aysel",
+            last_name="Quliyeva",
+        )
+        self.s2 = complete_student(
+            "yasamal7",
+            phone="+994501110102",
+            grade=7,
+            baku_district="Yasamal",
+            first_name="Nigar",
+            last_name="Məmmədova",
+        )
+        older = complete_student(
+            "kohne4",
+            phone="+994501110103",
+            grade=4,
+            baku_district="Binəqədi",
+            first_name="Elvin",
+            last_name="Əliyev",
+        )
+        older.date_joined = timezone.now() - timedelta(days=40)
+        older.save(update_fields=["date_joined"])
+
+    def test_users_page_shows_totals_and_grade_breakdown(self):
+        self.client.force_login(self.admin)
+        response = self.client.get("/panel/users/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Ümumi qeydiyyat")
+        self.assertContains(response, "Bu ay qeydiyyat")
+        self.assertContains(response, "5-ci sinif · 1")
+        self.assertContains(response, "7-ci sinif · 1")
+        self.assertContains(response, "4-cü sinif · 1")
+        self.assertContains(response, "Excel-ə çıxar")
+        self.assertEqual(response.context["total_count"], 3)
+        self.assertEqual(response.context["month_count"], 2)
+
+    def test_filter_shows_district_count(self):
+        self.client.force_login(self.admin)
+        response = self.client.get("/panel/users/", {"region": "Bakı — Binəqədi"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Aysel")
+        self.assertContains(response, "Elvin")
+        self.assertNotContains(response, "Nigar")
+        self.assertContains(response, "Seçilmiş filtr")
+        self.assertEqual(response.context["filtered_count"], 2)
+        self.assertEqual(response.context["total_count"], 3)
+        by_grade = {row["grade"]: row["total"] for row in response.context["grade_stats"]}
+        self.assertEqual(by_grade[5], 1)
+        self.assertEqual(by_grade[4], 1)
+        self.assertEqual(by_grade[7], 0)
+
+    def test_excel_export_uses_current_filter(self):
+        from io import BytesIO
+        import zipfile
+
+        self.client.force_login(self.admin)
+        response = self.client.get("/panel/users/", {"region": "Bakı — Binəqədi", "export": "xlsx"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response["Content-Type"],
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        with zipfile.ZipFile(BytesIO(response.content)) as archive:
+            sheet = archive.read("xl/worksheets/sheet1.xml").decode("utf-8")
+        self.assertIn("Aysel", sheet)
+        self.assertIn("Elvin", sheet)
+        self.assertNotIn("Nigar", sheet)
+
+    def test_student_cannot_open_users(self):
+        self.client.force_login(self.s1)
+        response = self.client.get("/panel/users/")
+        self.assertEqual(response.status_code, 302)
+
+
 class ExamWindowTests(TestCase):
     def setUp(self):
         self.user = complete_student("telebe2")

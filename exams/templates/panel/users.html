@@ -7,9 +7,38 @@
   </div>
   <div>
     <h1>İstifadəçilər</h1>
-    <p>Ad, telefon, sinif və ərazi — kurs dəvəti üçün əlaqə siyahısı.</p>
+    <p>Qeydiyyat statistikası, filtr və Excel ixracı.</p>
   </div>
 </section>
+
+<section class="stat-grid">
+  <article class="stat-card">
+    <div class="label">Ümumi qeydiyyat</div>
+    <div class="value">{{ total_count }}</div>
+  </article>
+  <article class="stat-card">
+    <div class="label">Bu ay qeydiyyat</div>
+    <div class="value">{{ month_count }}</div>
+  </article>
+  <article class="stat-card">
+    <div class="label">{% if filter_active %}Seçilmiş filtr{% else %}Cədvəldə{% endif %}</div>
+    <div class="value">{{ filtered_count }}</div>
+  </article>
+</section>
+
+<section class="panel-card" style="margin-bottom:14px">
+  <h2 style="margin-top:0">Siniflər üzrə</h2>
+  <p class="help" style="margin-top:0">{% if filter_active %}Hazırkı filtrə görə{% else %}Bütün qeydiyyat{% endif %}</p>
+  <div class="chips">
+    {% for row in grade_stats %}
+      <a class="chip {% if selected_grade == row.grade|stringformat:'s' %}is-active{% endif %}" href="{% querystring grade=row.grade export=None %}">{{ row.label }} · {{ row.total }}</a>
+    {% endfor %}
+    {% if ungraded_count %}
+      <span class="chip">Sinifsiz · {{ ungraded_count }}</span>
+    {% endif %}
+  </div>
+</section>
+
 <section class="panel-card">
   <form method="get" class="toolbar">
     <select name="grade">
@@ -25,11 +54,13 @@
       {% endfor %}
     </select>
     <button class="btn-bax" type="submit">Filter</button>
+    <a class="btn primary" href="{% querystring export='xlsx' %}">Excel-ə çıxar</a>
   </form>
+  <p class="muted">{% if filter_active %}Filtrə düşən: <strong>{{ filtered_count }}</strong> nəfər.{% else %}Cəmi <strong>{{ filtered_count }}</strong> nəfər.{% endif %}</p>
   <div class="table-wrap">
     <table class="data">
       <thead>
-          <tr><th>Ad Soyad</th><th>Əlaqə</th><th>Sinif</th><th>Ərazi</th><th>Rol</th><th>Aktiv</th></tr>
+          <tr><th>Ad Soyad</th><th>Əlaqə</th><th>Sinif</th><th>Ərazi</th><th>Qeydiyyat</th><th>Aktiv</th></tr>
       </thead>
       <tbody>
         {% for item in users %}
@@ -38,9 +69,11 @@
             <td>{% if item.profile %}{{ item.profile.phone }}{% else %}—{% endif %}</td>
             <td>{% if item.profile %}{{ item.profile.grade_display }}{% else %}—{% endif %}</td>
             <td>{% if item.profile %}{{ item.profile.area_label }}{% else %}—{% endif %}</td>
-            <td>{% if item.is_superuser %}Admin{% elif item.is_staff %}İnzibatçı{% else %}Tələbə{% endif %}</td>
+            <td>{{ item.date_joined|date:"d.m.Y" }}</td>
             <td>{% if item.is_active %}<span class="badge aciq">Bəli</span>{% else %}<span class="badge deaktiv">Xeyr</span>{% endif %}</td>
           </tr>
+        {% empty %}
+          <tr><td colspan="6" class="muted">Bu filtrə uyğun istifadəçi yoxdur.</td></tr>
         {% endfor %}
       </tbody>
     </table>

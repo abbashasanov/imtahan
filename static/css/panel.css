@@ -245,6 +245,9 @@ textarea { min-height: 88px; resize: vertical; }
   font-size: 0.86rem;
   font-weight: 700;
 }
+a.chip { text-decoration: none; }
+a.chip:hover { background: #bfdbfe; text-decoration: none; }
+a.chip.is-active { background: var(--blue); color: white; }
 
 .footer-bar {
   display: flex;

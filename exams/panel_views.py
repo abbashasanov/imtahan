@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
-from django.db.models import Avg, Count, Max, Q
+from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -32,7 +32,7 @@ from exams.services.scoring import (
     ranked_submissions,
 )
 from exams.services.certificates import build_certificate_pdf, issue_certificate_if_passed
-from exams.services.pdf_parser import ParseError, import_exam_from_pdf
+from exams.services.export import xlsx_response
 
 
 def staff_required(view):
@@ -560,25 +560,79 @@ def certificate_pdf(request, pk):
     return response
 
 
+def _registered_students():
+    return get_user_model().objects.filter(is_staff=False, profile__isnull=False).select_related(
+        "profile"
+    )
+
+
+def _month_start():
+    now = timezone.localtime()
+    return now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+
 @staff_required
 def user_list(request):
-    users = get_user_model().objects.select_related("profile").order_by(
-        "-is_staff", "-is_superuser", "username"
-    )
+    students = _registered_students().order_by("-date_joined", "username")
+    total_count = students.count()
+    month_count = students.filter(date_joined__gte=_month_start()).count()
+
     grade = request.GET.get("grade") or ""
     region = request.GET.get("region") or ""
+    filtered = students
     if grade.isdigit():
-        users = users.filter(profile__grade=int(grade))
-    users = _filter_by_area(users, region, profile_prefix="profile")
+        filtered = filtered.filter(profile__grade=int(grade))
+    filtered = _filter_by_area(filtered, region, profile_prefix="profile")
+    filtered_count = filtered.count()
+
+    grade_stats = []
+    counted = {
+        row["profile__grade"]: row["total"]
+        for row in filtered.values("profile__grade").annotate(total=Count("id"))
+        if row["profile__grade"]
+    }
+    for number, label in GRADE_CHOICES:
+        grade_stats.append(
+            {"grade": number, "label": label, "total": counted.get(number, 0)}
+        )
+    ungraded = filtered.filter(profile__grade__isnull=True).count()
+
+    if request.GET.get("export") == "xlsx":
+        rows = []
+        for user in filtered:
+            profile = user.profile
+            joined = timezone.localtime(user.date_joined)
+            rows.append(
+                [
+                    profile.first_name or user.first_name,
+                    profile.last_name or user.last_name,
+                    profile.phone or "",
+                    profile.grade_display,
+                    profile.area_label,
+                    joined.strftime("%d.%m.%Y %H:%M"),
+                ]
+            )
+        return xlsx_response(
+            "istifadeciler.xlsx",
+            ["Ad", "Soyad", "Əlaqə", "Sinif", "Ərazi", "Qeydiyyat tarixi"],
+            rows,
+        )
+
     return render(
         request,
         "panel/users.html",
         {
-            "users": users,
+            "users": filtered,
             "selected_grade": grade,
             "selected_region": region,
             "grade_choices": GRADE_CHOICES,
             "area_choices": _area_choices(),
+            "total_count": total_count,
+            "month_count": month_count,
+            "filtered_count": filtered_count,
+            "filter_active": bool(grade or region),
+            "grade_stats": grade_stats,
+            "ungraded_count": ungraded,
         },
     )
 
